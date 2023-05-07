@@ -52,6 +52,8 @@ public class UserEntity extends BaseEntity {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", bio='" + bio + '\'' +
+                ", followers=" + followers +
+                ", following=" + following +
                 '}';
     }
 }
