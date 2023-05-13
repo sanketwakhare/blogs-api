@@ -3,8 +3,7 @@ package com.sanket.blogsapi.articles;
 import com.sanket.blogsapi.common.BaseEntity;
 import com.sanket.blogsapi.users.UserEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -13,17 +12,24 @@ import java.util.List;
 @Getter
 @Setter
 @Entity(name = "articles")
+@NoArgsConstructor
+@AllArgsConstructor
+@RequiredArgsConstructor
+@Builder
 public class ArticleEntity extends BaseEntity {
 
+    @NonNull
     @Column(name = "title", nullable = false, length = 150)
     private String title;
 
+    @NonNull
     @Column(name = "slug", nullable = false, length = 100)
     private String slug;
 
     @Column(name = "subtitle", length = 150)
     private String subtitle;
 
+    @NonNull
     @Column(name = "body", nullable = false, length = 3000)
     private String body;
 
@@ -31,7 +37,7 @@ public class ArticleEntity extends BaseEntity {
 //    @ManyToOne
 //    private UserEntity author;
 
-    @ManyToMany
+    @ManyToMany(targetEntity = UserEntity.class)
     @JoinTable(
             name = "article_authors",
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
@@ -40,7 +46,7 @@ public class ArticleEntity extends BaseEntity {
     @LazyCollection(value = LazyCollectionOption.FALSE)
     private List<UserEntity> authors;
 
-    @ManyToMany
+    @ManyToMany(targetEntity = UserEntity.class)
     @JoinTable(
             name = "article_likes",
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
