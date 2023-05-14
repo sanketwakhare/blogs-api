@@ -53,4 +53,12 @@ public class UsersController {
         UserResponseDTO userResponseDTO = modelMapper.map(updatedUser, UserResponseDTO.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getUserById(
+            @PathVariable("id") UUID id) {
+        UserEntity user = userService.findById(id);
+        UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
+    }
 }

@@ -28,7 +28,7 @@ class BlogsApiApplicationTests {
         int random = (int) (Math.random() * 1000000000);
         String username = "sanket" + random;
         UserEntity savedUser = usersService.createUser(username, username + "@example.com", "password");
-        System.out.println(savedUser);
+        Assertions.assertEquals(savedUser.getUsername(), username);
     }
 
     @Test
