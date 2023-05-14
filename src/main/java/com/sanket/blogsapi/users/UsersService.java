@@ -82,4 +82,46 @@ public class UsersService {
         userEntity.setBio(bio);
         return usersRepository.save(userEntity);
     }
+
+    /**
+     * Find user by username
+     *
+     * @param username username
+     * @return UserEntity
+     */
+    public UserEntity findByUsername(String username) {
+        Optional<UserEntity> user = usersRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+        return user.get();
+    }
+
+    /**
+     * Find user by email
+     *
+     * @param email email
+     * @return UserEntity
+     */
+    public UserEntity findByEmail(String email) {
+        Optional<UserEntity> user = usersRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(email);
+        }
+        return user.get();
+    }
+
+    /**
+     * Find user by id
+     *
+     * @param id id
+     * @return UserEntity
+     */
+    public UserEntity findById(UUID id) {
+        Optional<UserEntity> user = usersRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(id);
+        }
+        return user.get();
+    }
 }
