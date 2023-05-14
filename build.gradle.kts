@@ -26,6 +26,8 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
+    implementation("org.modelmapper:modelmapper:3.1.1")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
