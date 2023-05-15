@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "8987a098-2ad4-479c-bc0b-b967886d860e",
+		"name": "Blogs Api (Sanket)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16037040",
+		"_collection_link": "https://blue-equinox-850488.postman.co/workspace/My-Workspace~7b735dcb-8f73-49fe-8198-652d1c542f95/collection/16037040-8987a098-2ad4-479c-bc0b-b967886d860e?action=share&creator=16037040&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "articles",
+			"item": [
+				{
+					"name": "create article",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"java second blog\",\r\n    \"subtitle\": \"java 201\",\r\n    \"body\": \"sample text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/articles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get article by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/996bd9ef-4da1-4f34-9c37-1a12ac281501",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"996bd9ef-4da1-4f34-9c37-1a12ac281501"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "create new user - signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"sanket123414\",\r\n    \"email\": \"sanket123414@gmail.com\",\r\n    \"password\": \"23SSgsg52#$%32332\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/users/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"sanket123414@gmail.com\",\r\n    \"password\": \"23SSgsg52#$%32332\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update bio",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bio\": \"dev blogs writer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/users/2d40026b-298b-4b84-929d-fe950d9f40f7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"2d40026b-298b-4b84-929d-fe950d9f40f7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/users/2d40026b-298b-4b84-929d-fe950d9f40f7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"2d40026b-298b-4b84-929d-fe950d9f40f7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "userId",
+			"value": "1735a1b5-bff0-470e-9919-8d1bf050f4ab"
+		}
+	]
+}
