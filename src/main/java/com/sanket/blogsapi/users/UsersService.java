@@ -74,11 +74,7 @@ public class UsersService {
      * @return UserEntity
      */
     public UserEntity updateBio(UUID id, String bio) {
-        Optional<UserEntity> user = usersRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(id);
-        }
-        UserEntity userEntity = user.get();
+        UserEntity userEntity = findById(id);
         userEntity.setBio(bio);
         return usersRepository.save(userEntity);
     }
