@@ -18,7 +18,7 @@ public class ArticleResponseDTO {
     private String slug;
     private String subtitle;
     private String body;
-    private List<UserResponseDTO> authors;
+    private List<ArticleAuthorResponseDTO> authors;
     // TODO: implement likes api
     // likes can be used to show the number of likes for an article.
     // likes need not be fetched immediately

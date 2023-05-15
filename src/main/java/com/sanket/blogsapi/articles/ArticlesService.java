@@ -1,5 +1,6 @@
 package com.sanket.blogsapi.articles;
 
+import com.sanket.blogsapi.articles.exceptions.ArticleNotFoundException;
 import com.sanket.blogsapi.services.slugs.SlugsService;
 import com.sanket.blogsapi.users.UserEntity;
 import com.sanket.blogsapi.users.UsersService;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -52,5 +54,18 @@ public class ArticlesService {
 
         // save article
         return articlesRepository.save(newArticle);
+    }
+
+    /**
+     * Get an article by ID
+     * @param id Article ID
+     * @return Article
+     */
+    public ArticleEntity getArticleById(UUID id) {
+        Optional<ArticleEntity> articleEntity = articlesRepository.findById(id);
+        if(articleEntity.isEmpty()) {
+            throw new ArticleNotFoundException(id);
+        }
+        return articleEntity.get();
     }
 }

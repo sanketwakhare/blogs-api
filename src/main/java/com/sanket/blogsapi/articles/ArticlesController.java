@@ -42,11 +42,10 @@ public class ArticlesController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<Void> getArticleById() {
-        // TODO 06:
-        //  1. call articlesService.getArticleById()
-        //  2. respond with 200 OK and article details
-        return null;
+    ResponseEntity<ArticleResponseDTO> getArticleById(@PathVariable("id") UUID id) {
+        ArticleEntity article = articlesService.getArticleById(id);
+        ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
     /**
