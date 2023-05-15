@@ -6,6 +6,7 @@ import com.sanket.blogsapi.common.dtos.FormFieldErrorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +26,6 @@ public class GenericExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<FormFieldErrorResponseDTO> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException exc) {
-//        ErrorResponseDTO errorResponse = new ErrorResponseDTO(exc.getCause().getMessage());
         FormFieldErrorResponseDTO formFieldErrorResponseDTO = new FormFieldErrorResponseDTO();
         List<FormFieldError> errors = new ArrayList<>();
         errors.add(new FormFieldError(exc.getName(), exc.getCause().getMessage()));
@@ -36,6 +36,12 @@ public class GenericExceptionHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponseDTO> handleMissingServletRequestParameterException(MissingServletRequestParameterException exc) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(exc.getCause().getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMissingRequestHeaderException(MissingRequestHeaderException exc) {
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(exc.getBody().getDetail());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
