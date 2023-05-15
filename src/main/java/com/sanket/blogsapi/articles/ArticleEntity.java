@@ -1,8 +1,10 @@
 package com.sanket.blogsapi.articles;
 
+import com.sanket.blogsapi.articles.constants.ArticlesErrorMessages;
 import com.sanket.blogsapi.common.BaseEntity;
 import com.sanket.blogsapi.users.UserEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -19,6 +21,7 @@ import java.util.List;
 public class ArticleEntity extends BaseEntity {
 
     @NonNull
+    @Size(min = 10, max = 150, message = ArticlesErrorMessages.TITLE_SIZE_CONSTRAINT_VIOLATION_ERROR)
     @Column(name = "title", nullable = false, length = 150)
     private String title;
 
@@ -54,4 +57,11 @@ public class ArticleEntity extends BaseEntity {
     )
     @LazyCollection(value = LazyCollectionOption.TRUE)
     private List<UserEntity> likedBy;
+
+//    // TODO: see how to implement this (without making other tables)
+//    @ManyToMany
+//    @Column(name = "tags", length = 100)
+//    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+//    private Set<String> tags = new HashSet<>();
+
 }
