@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,4 +21,6 @@ public class ArticleResponseDTO {
     private ArticleStatus status;
     private Set<String> tags;
     private Set<ArticleAuthorResponseDTO> authors;
+    private Date createdAt;
+    private Date updatedAt;
 }

@@ -1,6 +1,8 @@
 package com.sanket.blogsapi.articles;
 
+import com.sanket.blogsapi.articles.dtos.ArticlesFilterCriteriaRequestDTO;
 import com.sanket.blogsapi.articles.exceptions.ArticleNotFoundException;
+import com.sanket.blogsapi.articles.filters.ArticlesFilter;
 import com.sanket.blogsapi.services.slugs.SlugsService;
 import com.sanket.blogsapi.users.UserEntity;
 import com.sanket.blogsapi.users.UsersService;
@@ -15,13 +17,16 @@ public class ArticlesService {
     private final ArticlesRepository articlesRepository;
     private final UsersService usersService;
     private final SlugsService slugsService;
+    private final ArticlesFilter articlesFilter;
 
     public ArticlesService(@Autowired ArticlesRepository articlesRepository,
                            @Autowired UsersService usersService,
-                           @Autowired SlugsService slugsService) {
+                           @Autowired SlugsService slugsService,
+                           @Autowired ArticlesFilter articlesFilter) {
         this.articlesRepository = articlesRepository;
         this.usersService = usersService;
         this.slugsService = slugsService;
+        this.articlesFilter = articlesFilter;
     }
 
     /**
@@ -202,4 +207,16 @@ public class ArticlesService {
         ArticleEntity article = getArticleById(articleId);
         return articlesRepository.findArticleLikesById(article.getId());
     }
+
+    /**
+     * Get all articles / search articles / filter articles
+     *
+     * @param filterCriteria Filter criteria
+     * @return List of articles
+     */
+    public List<ArticleEntity> getAllArticles(ArticlesFilterCriteriaRequestDTO filterCriteria) {
+        List<ArticleEntity> articles = articlesRepository.findAll();
+        return articlesFilter.filterArticles(articles, filterCriteria);
+    }
+
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -19,4 +20,6 @@ public class UserResponseDTO {
     private String email;
     private String bio;
     private String token;
+    private Date createdAt;
+    private Date updatedAt;
 }

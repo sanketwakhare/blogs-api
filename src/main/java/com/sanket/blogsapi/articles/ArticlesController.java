@@ -9,10 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/articles")
@@ -69,12 +66,9 @@ public class ArticlesController {
 
         // TODO: this model mapping did not work
         // ArticlesListResponseDTO responseDTO = modelMapper.map(articles, ArticlesListResponseDTO.class);
-        ArticlesListResponseDTO responseDTO = new ArticlesListResponseDTO();
-        responseDTO.setArticles(new HashSet<>());
-        for (ArticleEntity article : articles) {
-            ArticleResponseDTO articleResponseDTO = modelMapper.map(article, ArticleResponseDTO.class);
-            responseDTO.getArticles().add(articleResponseDTO);
-        }
+
+        // convert to DTO
+        ArticlesListResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
@@ -200,5 +194,36 @@ public class ArticlesController {
         responseDTO.setLikesCount(likedBy.size());
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    /**
+     * Get all articles / search articles / filter articles
+     *
+     * @param requestDTO filter criteria details
+     * @return list of articles
+     */
+    @PostMapping("search")
+    ResponseEntity<ArticlesListResponseDTO> getAllArticles(@RequestBody ArticlesFilterCriteriaRequestDTO requestDTO) {
+        List<ArticleEntity> articles = articlesService.getAllArticles(requestDTO);
+        // convert to DTO
+        ArticlesListResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }
+
+    /**
+     * convert article entity list to DTO
+     *
+     * @param articles article entity list
+     * @return article DTO list
+     */
+    private ArticlesListResponseDTO mapToArticlesListResponseDTO(List<ArticleEntity> articles) {
+        ArticlesListResponseDTO responseDTO = new ArticlesListResponseDTO();
+        // use linked hash set to preserve sorting order of results
+        responseDTO.setArticles(new LinkedHashSet<>());
+        for (ArticleEntity article : articles) {
+            ArticleResponseDTO articleResponseDTO = modelMapper.map(article, ArticleResponseDTO.class);
+            responseDTO.getArticles().add(articleResponseDTO);
+        }
+        return responseDTO;
     }
 }
