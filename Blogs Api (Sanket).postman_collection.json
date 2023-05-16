@@ -462,6 +462,144 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "follow user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userIdToFollow\": \"22b6a04b-ecab-43be-802a-00c88677d5ba\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/users/follow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfollow user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userIdToUnfollow\": \"22b6a04b-ecab-43be-802a-00c88677d5ba\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/users/unfollow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"unfollow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user followings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/users/followings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"followings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user followers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{followingId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/users/followers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"followers"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
@@ -495,6 +633,10 @@
 			"key": "articleId",
 			"value": "d144b558-69d6-4f94-8d3e-b3f42002e5f7",
 			"type": "string"
+		},
+		{
+			"key": "followingId",
+			"value": "09168ff8-9487-43a7-87b3-60c258b1416e"
 		}
 	]
 }
