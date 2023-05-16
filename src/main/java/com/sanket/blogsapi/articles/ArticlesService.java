@@ -117,7 +117,7 @@ public class ArticlesService {
      * @param authorId Author ID
      * @return List of articles
      */
-    public List<ArticleEntity> getAllArticlesByAuthorId(UUID authorId) {
+    public Set<ArticleEntity> getAllArticlesByAuthorId(UUID authorId) {
         UserEntity author = usersService.findById(authorId);
         return articlesRepository.findAllByAuthors(author);
     }
@@ -214,9 +214,19 @@ public class ArticlesService {
      * @param filterCriteria Filter criteria
      * @return List of articles
      */
-    public List<ArticleEntity> searchArticles(ArticlesFilterCriteriaRequestDTO filterCriteria) {
+    public Set<ArticleEntity> searchArticles(ArticlesFilterCriteriaRequestDTO filterCriteria) {
         List<ArticleEntity> articles = articlesRepository.findAll();
         return articlesFilter.filterArticles(articles, filterCriteria);
+    }
+
+    /**
+     * Get all articles
+     *
+     * @return List of articles
+     */
+    public Set<ArticleEntity> getAllArticles() {
+        List<ArticleEntity> articles = articlesRepository.findAll();
+        return new LinkedHashSet<>(articles);
     }
 
 }

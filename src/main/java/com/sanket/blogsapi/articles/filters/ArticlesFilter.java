@@ -17,18 +17,20 @@ public class ArticlesFilter {
     /**
      * Filter articles based on filter criteria
      *
-     * @param articles       List of articles to be filtered
+     * @param articlesList       List of articles to be filtered
      * @param filterCriteria Filter criteria
      * @return Filtered list of articles
      */
-    public List<ArticleEntity> filterArticles(List<ArticleEntity> articles, ArticlesFilterCriteriaRequestDTO filterCriteria) {
+    public Set<ArticleEntity> filterArticles(List<ArticleEntity> articlesList, ArticlesFilterCriteriaRequestDTO filterCriteria) {
+
+        Set<ArticleEntity> articles = new HashSet<>(articlesList);
 
         // filter by user id
         UUID authorId = filterCriteria.getAuthorId();
         if (!Objects.isNull(authorId)) {
             articles = articles.stream().filter(article ->
                     article.getAuthors().stream().anyMatch(author -> author.getId().equals(authorId))
-            ).collect(Collectors.toList());
+            ).collect(Collectors.toSet());
         }
         // filter by tags
         Set<String> tags = filterCriteria.getTags();
@@ -36,8 +38,8 @@ public class ArticlesFilter {
         if (!tags.isEmpty()) {
             Set<String> finalTags = tags;
             articles = articles.stream()
-                    .filter(article -> article.getTags().stream().anyMatch(tag -> finalTags.contains(tag)))
-                    .collect(Collectors.toList());
+                    .filter(article -> article.getTags().stream().anyMatch(finalTags::contains))
+                    .collect(Collectors.toSet());
         }
         // filter by date range
         Date fromDate = filterCriteria.getFromDate();
@@ -45,19 +47,17 @@ public class ArticlesFilter {
         if (!Objects.isNull(fromDate) && !Objects.isNull(toDate)) {
             articles = articles.stream()
                     .filter(article -> article.getCreatedAt().after(fromDate) && article.getCreatedAt().before(toDate))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
         }
 
         // sort articles by createdAt date
         if (!Objects.isNull(filterCriteria.getSortCriteria())) {
             SortDirection direction = filterCriteria.getSortCriteria().getDirection();
             switch (direction) {
-                case DESC:
-                    articles = articles.stream().sorted(Comparator.comparing(ArticleEntity::getCreatedAt).reversed()).collect(Collectors.toList());
-                    break;
-                case ASC:
-                    articles = articles.stream().sorted(Comparator.comparing(ArticleEntity::getCreatedAt)).collect(Collectors.toList());
-                    break;
+                case DESC ->
+                        articles = articles.stream().sorted(Comparator.comparing(ArticleEntity::getCreatedAt).reversed()).collect(Collectors.toCollection(LinkedHashSet::new));
+                case ASC ->
+                        articles = articles.stream().sorted(Comparator.comparing(ArticleEntity::getCreatedAt)).collect(Collectors.toCollection(LinkedHashSet::new));
             }
 
         }

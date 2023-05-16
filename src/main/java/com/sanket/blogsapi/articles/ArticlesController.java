@@ -9,7 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/articles")
@@ -28,9 +31,13 @@ public class ArticlesController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Void> getAllArticles() {
+    public ResponseEntity<ArticlesSetResponseDTO> getAllArticles() {
         // this is implemented by searchArticles() method
         // used Post method to implement searchArticles
+        Set<ArticleEntity> articles = articlesService.getAllArticles();
+        // convert to DTO
+        ArticlesSetResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
         // TODO 05:
         //  1. call articlesService.getAllArticles()
         //  2. respond with 200 OK and list of articles
@@ -40,7 +47,6 @@ public class ArticlesController {
         //  2. add filter by tag `?tag=java`
         //  3. add sort by date `?sortBy=date`
         //  4. add filter by date range `?from=2021-01-01&to=2021-01-31`
-        return null;
     }
 
     /**
@@ -63,14 +69,14 @@ public class ArticlesController {
      * @return List of articles
      */
     @GetMapping("/author/{authorId}")
-    public ResponseEntity<ArticlesListResponseDTO> getAllArticlesByAuthorId(@PathVariable("authorId") UUID authorId) {
-        List<ArticleEntity> articles = articlesService.getAllArticlesByAuthorId(authorId);
+    public ResponseEntity<ArticlesSetResponseDTO> getAllArticlesByAuthorId(@PathVariable("authorId") UUID authorId) {
+        Set<ArticleEntity> articles = articlesService.getAllArticlesByAuthorId(authorId);
 
         // TODO: this model mapping did not work
         // ArticlesListResponseDTO responseDTO = modelMapper.map(articles, ArticlesListResponseDTO.class);
 
         // convert to DTO
-        ArticlesListResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
+        ArticlesSetResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
@@ -210,10 +216,10 @@ public class ArticlesController {
      * @return list of articles
      */
     @PostMapping("search")
-    public ResponseEntity<ArticlesListResponseDTO> searchArticles(@RequestBody ArticlesFilterCriteriaRequestDTO requestDTO) {
-        List<ArticleEntity> articles = articlesService.searchArticles(requestDTO);
+    public ResponseEntity<ArticlesSetResponseDTO> searchArticles(@RequestBody ArticlesFilterCriteriaRequestDTO requestDTO) {
+        Set<ArticleEntity> articles = articlesService.searchArticles(requestDTO);
         // convert to DTO
-        ArticlesListResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
+        ArticlesSetResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
@@ -223,8 +229,8 @@ public class ArticlesController {
      * @param articles article entity list
      * @return article DTO list
      */
-    private ArticlesListResponseDTO mapToArticlesListResponseDTO(List<ArticleEntity> articles) {
-        ArticlesListResponseDTO responseDTO = new ArticlesListResponseDTO();
+    private ArticlesSetResponseDTO mapToArticlesListResponseDTO(Set<ArticleEntity> articles) {
+        ArticlesSetResponseDTO responseDTO = new ArticlesSetResponseDTO();
         // use linked hash set to preserve sorting order of results
         responseDTO.setArticles(new LinkedHashSet<>());
         for (ArticleEntity article : articles) {

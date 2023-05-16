@@ -9,6 +9,6 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticlesListResponseDTO {
+public class ArticlesSetResponseDTO {
     private Set<ArticleResponseDTO> articles;
 }
