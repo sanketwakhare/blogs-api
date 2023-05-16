@@ -5,16 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-import java.util.Set;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateArticleRequestDTO {
+public class ArticleLikedByUserResponseDTO {
     @NonNull
-    private String title;
-    private String subtitle;
+    private UUID id;
     @NonNull
-    private String body;
-    private Set<String> tags;
+    private String username;
+    @NonNull
+    private String email;
 }
