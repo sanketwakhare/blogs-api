@@ -29,6 +29,8 @@ public class ArticlesController {
 
     @GetMapping("")
     public ResponseEntity<Void> getAllArticles() {
+        // this is implemented by searchArticles() method
+        // used Post method to implement searchArticles
         // TODO 05:
         //  1. call articlesService.getAllArticles()
         //  2. respond with 200 OK and list of articles
@@ -48,7 +50,7 @@ public class ArticlesController {
      * @return Article
      */
     @GetMapping("/{id}")
-    ResponseEntity<ArticleResponseDTO> getArticleById(@PathVariable("id") UUID id) {
+    public ResponseEntity<ArticleResponseDTO> getArticleById(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.getArticleById(id);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
@@ -61,7 +63,7 @@ public class ArticlesController {
      * @return List of articles
      */
     @GetMapping("/author/{authorId}")
-    ResponseEntity<ArticlesListResponseDTO> getAllArticlesByAuthorId(@PathVariable("authorId") UUID authorId) {
+    public ResponseEntity<ArticlesListResponseDTO> getAllArticlesByAuthorId(@PathVariable("authorId") UUID authorId) {
         List<ArticleEntity> articles = articlesService.getAllArticlesByAuthorId(authorId);
 
         // TODO: this model mapping did not work
@@ -80,7 +82,7 @@ public class ArticlesController {
      * @return Created article
      */
     @PostMapping("")
-    ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody CreateArticleRequestDTO requestDTO, @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody CreateArticleRequestDTO requestDTO, @RequestHeader("Authorization") String bearerToken) {
         UUID userId = tokensService.getUserIdFromToken(bearerToken);
         ArticleEntity article = modelMapper.map(requestDTO, ArticleEntity.class);
         ArticleEntity newArticle = articlesService.createArticle(article, userId);
@@ -96,7 +98,7 @@ public class ArticlesController {
      * @return Updated article
      */
     @PatchMapping("/{id}")
-    ResponseEntity<ArticleResponseDTO> updateArticle(@RequestBody UpdateArticleRequestDTO updateArticleRequestDTO, @PathVariable("id") UUID id) {
+    public ResponseEntity<ArticleResponseDTO> updateArticle(@RequestBody UpdateArticleRequestDTO updateArticleRequestDTO, @PathVariable("id") UUID id) {
         ArticleEntity articleEntity = modelMapper.map(updateArticleRequestDTO, ArticleEntity.class);
         ArticleEntity article = articlesService.updateArticle(id, articleEntity);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
@@ -110,7 +112,7 @@ public class ArticlesController {
      * @return Published article
      */
     @PatchMapping("/publish/{id}")
-    ResponseEntity<ArticleResponseDTO> publishArticle(@PathVariable("id") UUID id) {
+    public ResponseEntity<ArticleResponseDTO> publishArticle(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.publishArticle(id);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
@@ -123,7 +125,7 @@ public class ArticlesController {
      * @return Deleted article
      */
     @DeleteMapping("/{id}")
-    ResponseEntity<ArticleResponseDTO> deleteArticle(@PathVariable("id") UUID id) {
+    public ResponseEntity<ArticleResponseDTO> deleteArticle(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.deleteArticle(id);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
@@ -136,7 +138,7 @@ public class ArticlesController {
      * @return Drafted article
      */
     @PatchMapping("/move-to-draft/{id}")
-    ResponseEntity<ArticleResponseDTO> moveArticleToDraft(@PathVariable("id") UUID id) {
+    public ResponseEntity<ArticleResponseDTO> moveArticleToDraft(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.moveArticleToDraft(id);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
@@ -150,7 +152,7 @@ public class ArticlesController {
      * @return Article reaction
      */
     @PatchMapping("/like/{id}")
-    ResponseEntity<ArticleReactionResponseDTO> likeArticle(@PathVariable("id") UUID articleId, @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<ArticleReactionResponseDTO> likeArticle(@PathVariable("id") UUID articleId, @RequestHeader("Authorization") String bearerToken) {
         UUID userId = tokensService.getUserIdFromToken(bearerToken);
         ArticleReactionType reaction = articlesService.likeArticle(articleId, userId);
         ArticleReactionResponseDTO responseDTO = new ArticleReactionResponseDTO();
@@ -168,7 +170,7 @@ public class ArticlesController {
      * @return Article reaction
      */
     @DeleteMapping("/dislike/{id}")
-    ResponseEntity<ArticleReactionResponseDTO> dislikeArticle(@PathVariable("id") UUID articleId, @RequestHeader("Authorization") String bearerToken) {
+    public ResponseEntity<ArticleReactionResponseDTO> dislikeArticle(@PathVariable("id") UUID articleId, @RequestHeader("Authorization") String bearerToken) {
         UUID userId = tokensService.getUserIdFromToken(bearerToken);
         ArticleReactionType reaction = articlesService.dislikeArticle(articleId, userId);
         ArticleReactionResponseDTO responseDTO = new ArticleReactionResponseDTO();
@@ -185,7 +187,7 @@ public class ArticlesController {
      * @return Article likes details
      */
     @GetMapping("/likes/{id}")
-    ResponseEntity<ArticleLikesResponseDTO> getArticleLikes(@PathVariable("id") UUID articleId) {
+    public ResponseEntity<ArticleLikesResponseDTO> getArticleLikes(@PathVariable("id") UUID articleId) {
         Set<UserEntity> users = articlesService.getArticleLikes(articleId);
 
         ArticleLikesResponseDTO responseDTO = new ArticleLikesResponseDTO();
@@ -208,7 +210,7 @@ public class ArticlesController {
      * @return list of articles
      */
     @PostMapping("search")
-    ResponseEntity<ArticlesListResponseDTO> searchArticles(@RequestBody ArticlesFilterCriteriaRequestDTO requestDTO) {
+    public ResponseEntity<ArticlesListResponseDTO> searchArticles(@RequestBody ArticlesFilterCriteriaRequestDTO requestDTO) {
         List<ArticleEntity> articles = articlesService.searchArticles(requestDTO);
         // convert to DTO
         ArticlesListResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
