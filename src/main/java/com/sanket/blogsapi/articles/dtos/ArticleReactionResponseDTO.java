@@ -6,6 +6,7 @@ import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import java.util.UUID;
 
@@ -13,8 +14,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleReactionResponseDTO {
+    @NonNull
     private UUID articleId;
+    @NonNull
     private UUID userId;
+    @NonNull
     @Enumerated(value = EnumType.STRING)
     private ArticleReactionType reaction;
 }
