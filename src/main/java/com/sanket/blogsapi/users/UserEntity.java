@@ -1,6 +1,7 @@
 package com.sanket.blogsapi.users;
 
 import com.sanket.blogsapi.common.BaseEntity;
+import com.sanket.blogsapi.common.constants.CommonConstants;
 import com.sanket.blogsapi.users.constants.UsersErrorMessages;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +28,7 @@ public class UserEntity extends BaseEntity {
     private String username;
 
     @NonNull
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
+    @Email(regexp = CommonConstants.EMAIL_VALIDATION_PATTERN,
             message = UsersErrorMessages.INVALID_USER_EMAIL)
     @Column(name = "email", nullable = false, unique = true, length = 30)
     private String email;

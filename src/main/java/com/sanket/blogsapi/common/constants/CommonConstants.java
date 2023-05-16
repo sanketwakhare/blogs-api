@@ -1,6 +1,10 @@
 package com.sanket.blogsapi.common.constants;
 
 public class CommonConstants {
+
+    /**
+     * common constants
+     */
     public static final String EMPTY_STRING = "";
     public static final String SPACE = " ";
     public static final String HYPHEN = "-";
@@ -31,4 +35,9 @@ public class CommonConstants {
     public static final String ERROR = "error";
     public static final String WARNING = "warning";
     public static final String INFO = "info";
+
+    /**
+     * email validation pattern
+     */
+    public static final String EMAIL_VALIDATION_PATTERN = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}";
 }
