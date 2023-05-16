@@ -27,7 +27,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"javascript functions\",\r\n    \"subtitle\": \"js basicsfunctions\",\r\n    \"body\": \"Lorem Ipsum\",\r\n    \"tags\": [\r\n        \"javascript\",\r\n        \"frontend\",\r\n        \"functions\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"title\": \"javascript currying\",\r\n    \"subtitle\": \"js function currying\",\r\n    \"body\": \"Lorem Ipsum 123\",\r\n    \"tags\": [\r\n        \"javascript\",\r\n        \"frontend\",\r\n        \"functions\",\r\n        \"currying\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -158,7 +158,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"javascript event loop\",\r\n    \"subtitle\": \"js basics\",\r\n    \"body\": \"Lorem Ipsum\",\r\n    \"tags\": [\r\n        \"frontend\",\r\n        \"js\",\r\n        \"javascript\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"title\": \"javascript currying\",\r\n    \"subtitle\": \"currying\",\r\n    \"body\": \"currying currying currying\",\r\n    \"tags\": [\r\n        \"frontend\",\r\n        \"js\",\r\n        \"javascript\",\r\n        \"currying\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -272,6 +272,84 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "search/filter articles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"authorId\": \"{{userId}}\",\r\n    \"tags\": [\"javascript\"],\r\n    \"fromDate\": \"2023-05-01\",\r\n    \"toDate\": \"2023-05-20\",\r\n    \"sortCriteria\": {\r\n        \"direction\": \"ASC\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/articles/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search articles by tags",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tags\": [\"backend\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/articles/search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"search"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -285,7 +363,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"sanket123414\",\r\n    \"email\": \"sanket123414@gmail.com\",\r\n    \"password\": \"23SSgsg52#$%32332\"\r\n}",
+							"raw": "{\r\n    \"username\": \"gathaw\",\r\n    \"email\": \"gathaw@example.com\",\r\n    \"password\": \"gathaw@pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -314,7 +392,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"sanket123414@gmail.com\",\r\n    \"password\": \"23SSgsg52#$%32332\"\r\n}",
+							"raw": "{\r\n    \"email\": \"gathaw@example.com\",\r\n    \"password\": \"gathaw@pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -343,7 +421,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"bio\": \"dev blogs writer\"\r\n}",
+							"raw": "{\r\n    \"bio\": \"dev blogs writer!!!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -351,7 +429,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8823/users/2d40026b-298b-4b84-929d-fe950d9f40f7",
+							"raw": "http://localhost:8823/users/{{userId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -359,7 +437,7 @@
 							"port": "8823",
 							"path": [
 								"users",
-								"2d40026b-298b-4b84-929d-fe950d9f40f7"
+								"{{userId}}"
 							]
 						}
 					},
@@ -371,7 +449,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8823/users/2d40026b-298b-4b84-929d-fe950d9f40f7",
+							"raw": "http://localhost:8823/users/{{userId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -379,7 +457,7 @@
 							"port": "8823",
 							"path": [
 								"users",
-								"2d40026b-298b-4b84-929d-fe950d9f40f7"
+								"{{userId}}"
 							]
 						}
 					},
