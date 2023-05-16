@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
@@ -24,4 +25,9 @@ public abstract class BaseEntity {
 //    @CreationTimestamp - another way to create date timestamp
     @Column(name = "created_at")
     private Date createdAt;
+
+    @Setter
+    @LastModifiedDate // to enable auditing for updated_at
+    @Column(name = "updated_at")
+    private Date updatedAt;
 }
