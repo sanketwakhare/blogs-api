@@ -1,6 +1,6 @@
 package com.sanket.blogsapi.articles;
 
-public enum ArticleReaction {
+public enum ArticleReactionType {
     LIKED,
     DISLIKED,
 }

@@ -9,7 +9,9 @@ import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,6 +38,10 @@ public class ArticleEntity extends BaseEntity {
     @Column(name = "body", nullable = false, length = 3000)
     private String body;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ArticleStatus status = ArticleStatus.DRAFT;
+
 //    // if only single author is allowed
 //    @ManyToOne
 //    private UserEntity author;
@@ -47,7 +53,7 @@ public class ArticleEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id")
     )
     @LazyCollection(value = LazyCollectionOption.FALSE)
-    private List<UserEntity> authors;
+    private Set<UserEntity> authors;
 
     @ManyToMany(targetEntity = UserEntity.class)
     @JoinTable(
@@ -55,13 +61,13 @@ public class ArticleEntity extends BaseEntity {
             joinColumns = @JoinColumn(name = "article_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
-    @LazyCollection(value = LazyCollectionOption.TRUE)
-    private List<UserEntity> likedBy;
+    @LazyCollection(value = LazyCollectionOption.FALSE)
+    private Set<UserEntity> likedBy;
 
 //    // TODO: see how to implement this (without making other tables)
 //    @ManyToMany
-//    @Column(name = "tags", length = 100)
-//    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
-//    private Set<String> tags = new HashSet<>();
+    @Column(name = "tags", length = 100)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> tags = new HashSet<>();
 
 }
