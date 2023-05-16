@@ -214,7 +214,7 @@ public class ArticlesService {
      * @param filterCriteria Filter criteria
      * @return List of articles
      */
-    public List<ArticleEntity> getAllArticles(ArticlesFilterCriteriaRequestDTO filterCriteria) {
+    public List<ArticleEntity> searchArticles(ArticlesFilterCriteriaRequestDTO filterCriteria) {
         List<ArticleEntity> articles = articlesRepository.findAll();
         return articlesFilter.filterArticles(articles, filterCriteria);
     }

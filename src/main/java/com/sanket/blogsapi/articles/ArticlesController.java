@@ -208,8 +208,8 @@ public class ArticlesController {
      * @return list of articles
      */
     @PostMapping("search")
-    ResponseEntity<ArticlesListResponseDTO> getAllArticles(@RequestBody ArticlesFilterCriteriaRequestDTO requestDTO) {
-        List<ArticleEntity> articles = articlesService.getAllArticles(requestDTO);
+    ResponseEntity<ArticlesListResponseDTO> searchArticles(@RequestBody ArticlesFilterCriteriaRequestDTO requestDTO) {
+        List<ArticleEntity> articles = articlesService.searchArticles(requestDTO);
         // convert to DTO
         ArticlesListResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
