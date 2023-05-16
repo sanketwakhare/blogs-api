@@ -27,7 +27,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"java second blog\",\r\n    \"subtitle\": \"java 201\",\r\n    \"body\": \"sample text\"\r\n}",
+							"raw": "{\r\n    \"title\": \"javascript functions\",\r\n    \"subtitle\": \"js basicsfunctions\",\r\n    \"body\": \"Lorem Ipsum\",\r\n    \"tags\": [\r\n        \"javascript\",\r\n        \"frontend\",\r\n        \"functions\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -54,7 +54,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8823/articles/996bd9ef-4da1-4f34-9c37-1a12ac281501",
+							"raw": "http://localhost:8823/articles/{{articleId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -62,7 +62,212 @@
 							"port": "8823",
 							"path": [
 								"articles",
-								"996bd9ef-4da1-4f34-9c37-1a12ac281501"
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete article",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "publish article",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/publish/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"publish",
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "move article to draft",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/move-to-draft/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"move-to-draft",
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find all by author id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/author/{{userId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"author",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update article",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"javascript event loop\",\r\n    \"subtitle\": \"js basics\",\r\n    \"body\": \"Lorem Ipsum\",\r\n    \"tags\": [\r\n        \"frontend\",\r\n        \"js\",\r\n        \"javascript\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/articles/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "like article",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/like/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"like",
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dislike article",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/dislike/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"dislike",
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get article likes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/likes/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"likes",
+								"{{articleId}}"
 							]
 						}
 					},
@@ -206,7 +411,12 @@
 	"variable": [
 		{
 			"key": "userId",
-			"value": "1735a1b5-bff0-470e-9919-8d1bf050f4ab"
+			"value": "2d40026b-298b-4b84-929d-fe950d9f40f7"
+		},
+		{
+			"key": "articleId",
+			"value": "d144b558-69d6-4f94-8d3e-b3f42002e5f7",
+			"type": "string"
 		}
 	]
 }
