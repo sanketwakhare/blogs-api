@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Entity(name = "users")
 @Builder
-@ToString
 public class UserEntity extends BaseEntity {
 
     @NonNull
@@ -43,10 +42,10 @@ public class UserEntity extends BaseEntity {
     private String bio;
 
     @ManyToMany(targetEntity = UserEntity.class, mappedBy = "following")
-    private List<UserEntity> followers;
+    private Set<UserEntity> followers;
 
     @ManyToMany
-    private List<UserEntity> following;
+    private Set<UserEntity> following;
 
 //    if two separate mapping tables are needed for followers and following, then use the below code
     /* @ManyToMany

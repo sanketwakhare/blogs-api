@@ -1,13 +1,12 @@
 package com.sanket.blogsapi.users;
 
-import com.sanket.blogsapi.users.exceptions.DuplicateUserEmailException;
-import com.sanket.blogsapi.users.exceptions.DuplicateUserNameException;
-import com.sanket.blogsapi.users.exceptions.InvalidCredentialsException;
-import com.sanket.blogsapi.users.exceptions.UserNotFoundException;
+import com.sanket.blogsapi.users.constants.UsersErrorMessages;
+import com.sanket.blogsapi.users.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -20,7 +19,7 @@ public class UsersService {
     }
 
     /**
-     * Create a new user
+     * Create a new user with unique username and email. and password
      *
      * @param username unique username
      * @param email    unique email
@@ -52,7 +51,7 @@ public class UsersService {
     }
 
     /**
-     * Login a user
+     * Perform Login with email and password
      *
      * @param email    email
      * @param password password
@@ -119,5 +118,78 @@ public class UsersService {
             throw new UserNotFoundException(id);
         }
         return user.get();
+    }
+
+    /**
+     * Follow a user
+     *
+     * @param userId         user id
+     * @param userIdToFollow user id to follow
+     */
+    public void followUser(UUID userId, UUID userIdToFollow) {
+        // check if user is trying to follow himself
+        if (userId.equals(userIdToFollow)) {
+            throw new UserCannotFollowException(UsersErrorMessages.CANNOT_FOLLOW_ITSELF);
+        }
+        UserEntity user = findById(userId);
+        UserEntity userToFollow = findById(userIdToFollow);
+
+        // get existing followings
+        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(userId);
+        if (!followings.contains(userToFollow)) {
+            followings.add(userToFollow);
+            user.setFollowing(followings);
+            usersRepository.save(user);
+        } else {
+            // user is already followed
+            throw new UserAlreadyFollowedException();
+        }
+    }
+
+    /**
+     * Unfollow a user
+     *
+     * @param userId           user id
+     * @param userIdToUnfollow user id to unfollow
+     */
+    public void unfollowUser(UUID userId, UUID userIdToUnfollow) {
+        if (userId.equals(userIdToUnfollow)) {
+            throw new UserCannotUnfollowException(UsersErrorMessages.CANNOT_UNFOLLOW_ITSELF);
+        }
+        UserEntity user = findById(userId);
+        UserEntity userToUnfollow = findById(userIdToUnfollow);
+
+        // get existing followings
+        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(userId);
+        if (followings.contains(userToUnfollow)) {
+            followings.remove(userToUnfollow);
+            user.setFollowing(followings);
+            usersRepository.save(user);
+        } else {
+            // user is not following
+            throw new UserCannotUnfollowException(UsersErrorMessages.USER_NOT_FOLLOWED);
+        }
+    }
+
+    /**
+     * Get followings for a user
+     *
+     * @param userId user id
+     * @return set of user followings
+     */
+    public Set<UserEntity> getFollowingsForUserId(UUID userId) {
+        UserEntity user = findById(userId);
+        return usersRepository.getFollowingsForUserId(user.getId());
+    }
+
+    /**
+     * Get followers for a user
+     *
+     * @param userId user id
+     * @return set of user followers
+     */
+    public Set<UserEntity> getFollowersForUserId(UUID userId) {
+        UserEntity user = findById(userId);
+        return usersRepository.getFollowersForUserId(user.getId());
     }
 }

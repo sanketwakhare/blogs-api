@@ -32,4 +32,15 @@ public class UsersExceptionHandler {
         errorResponseDTO.setErrorMessage(exc.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDTO);
     }
+
+    @ExceptionHandler({
+            UserCannotFollowException.class,
+            UserCannotUnfollowException.class,
+            UserAlreadyFollowedException.class
+    })
+    public ResponseEntity<ErrorResponseDTO> handleUsersFollowUnfollowOperationException(Exception exc) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+        errorResponseDTO.setErrorMessage(exc.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDTO);
+    }
 }
