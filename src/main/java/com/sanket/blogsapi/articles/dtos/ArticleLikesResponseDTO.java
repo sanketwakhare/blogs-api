@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleLikesResponseDTO {
+     private UUID articleId;
      private Set<ArticleLikedByUserResponseDTO> likedBy = new HashSet<>();
      private int likesCount = 0;
 }

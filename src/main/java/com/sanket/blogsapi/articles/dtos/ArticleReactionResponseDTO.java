@@ -7,10 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticleReactionResponseDTO {
+    private UUID articleId;
+    private UUID userId;
     @Enumerated(value = EnumType.STRING)
     private ArticleReactionType reaction;
 }

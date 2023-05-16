@@ -20,7 +20,7 @@ public class GenericExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadableException(HttpMessageNotReadableException exc) {
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO(exc.getCause().getMessage());
+        ErrorResponseDTO errorResponse = new ErrorResponseDTO(exc.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 

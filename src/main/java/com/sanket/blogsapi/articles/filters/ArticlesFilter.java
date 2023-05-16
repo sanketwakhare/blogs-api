@@ -23,7 +23,7 @@ public class ArticlesFilter {
      */
     public List<ArticleEntity> filterArticles(List<ArticleEntity> articles, ArticlesFilterCriteriaRequestDTO filterCriteria) {
 
-        // filter by user di
+        // filter by user id
         UUID authorId = filterCriteria.getAuthorId();
         if (!Objects.isNull(authorId)) {
             articles = articles.stream().filter(article ->
@@ -32,9 +32,11 @@ public class ArticlesFilter {
         }
         // filter by tags
         Set<String> tags = filterCriteria.getTags();
-        if (!Objects.isNull(tags) && !tags.isEmpty()) {
+        tags = tags.stream().filter(tag -> !tag.isBlank()).collect(Collectors.toSet());
+        if (!tags.isEmpty()) {
+            Set<String> finalTags = tags;
             articles = articles.stream()
-                    .filter(article -> article.getTags().stream().anyMatch(tag -> tags.contains(tag)))
+                    .filter(article -> article.getTags().stream().anyMatch(tag -> finalTags.contains(tag)))
                     .collect(Collectors.toList());
         }
         // filter by date range
@@ -54,7 +56,6 @@ public class ArticlesFilter {
                     articles = articles.stream().sorted(Comparator.comparing(ArticleEntity::getCreatedAt).reversed()).collect(Collectors.toList());
                     break;
                 case ASC:
-                default:
                     articles = articles.stream().sorted(Comparator.comparing(ArticleEntity::getCreatedAt)).collect(Collectors.toList());
                     break;
             }

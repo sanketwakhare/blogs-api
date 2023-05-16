@@ -154,6 +154,8 @@ public class ArticlesController {
         UUID userId = tokensService.getUserIdFromToken(bearerToken);
         ArticleReactionType reaction = articlesService.likeArticle(articleId, userId);
         ArticleReactionResponseDTO responseDTO = new ArticleReactionResponseDTO();
+        responseDTO.setArticleId(articleId);
+        responseDTO.setUserId(userId);
         responseDTO.setReaction(reaction);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
     }
@@ -170,6 +172,8 @@ public class ArticlesController {
         UUID userId = tokensService.getUserIdFromToken(bearerToken);
         ArticleReactionType reaction = articlesService.dislikeArticle(articleId, userId);
         ArticleReactionResponseDTO responseDTO = new ArticleReactionResponseDTO();
+        responseDTO.setArticleId(articleId);
+        responseDTO.setUserId(userId);
         responseDTO.setReaction(reaction);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
     }
@@ -190,6 +194,7 @@ public class ArticlesController {
             ArticleLikedByUserResponseDTO userResponseDTO = modelMapper.map(user, ArticleLikedByUserResponseDTO.class);
             likedBy.add(userResponseDTO);
         }
+        responseDTO.setArticleId(articleId);
         responseDTO.setLikedBy(likedBy);
         responseDTO.setLikesCount(likedBy.size());
 

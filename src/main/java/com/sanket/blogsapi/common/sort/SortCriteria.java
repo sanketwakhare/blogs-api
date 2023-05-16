@@ -16,5 +16,5 @@ public class SortCriteria {
     // private String field;
 
     @Enumerated(value = EnumType.STRING)
-    private SortDirection direction;
+    private SortDirection direction = SortDirection.ASC;
 }
