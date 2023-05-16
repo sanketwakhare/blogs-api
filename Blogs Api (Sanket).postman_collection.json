@@ -329,7 +329,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"tags\": [\"backend\"]\r\n}",
+							"raw": "{\r\n    \"tags\": [\"javascript\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -602,6 +602,159 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "create/post new comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Great tutorial! Loved it!\",\r\n    \"body\": \"Thank you for sharing this excellent tutorial on JavaScript\",\r\n    \"articleId\": \"{{articleId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/comments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all comments for an article",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/comments/article/{{articleId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"comments",
+								"article",
+								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Excellent explanation!\",\r\n    \"body\": \"The explanations were clear and easy to understand\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/comments/{{commentId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"comments",
+								"{{commentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find comment by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/comments/{{commentId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"comments",
+								"{{commentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete comment by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userId}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/comments/{{commentId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"comments",
+								"{{commentId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -637,6 +790,10 @@
 		{
 			"key": "followingId",
 			"value": "09168ff8-9487-43a7-87b3-60c258b1416e"
+		},
+		{
+			"key": "commentId",
+			"value": "52fede8c-9bde-4ee2-9567-38badd072cd7"
 		}
 	]
 }
