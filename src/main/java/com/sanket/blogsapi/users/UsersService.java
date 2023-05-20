@@ -44,6 +44,11 @@ public class UsersService {
             throw new DuplicateUserEmailException(email);
         }
 
+        // validate password length
+        if (password.length() < 8) {
+            throw new PasswordLengthException();
+        }
+
         // encode password
         String encodedPassword = passwordEncoder.encode(password);
 
