@@ -19,15 +19,31 @@ repositories {
 }
 
 dependencies {
+
+    // spring boot
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    // lombok
+    compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+
+    // model mapper
     implementation("org.modelmapper:modelmapper:3.1.1")
+
+    // mysql database
+    runtimeOnly("com.mysql:mysql-connector-j")
+
+    // validations
     implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+
+    // spring security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
+
+    // spring boot tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
