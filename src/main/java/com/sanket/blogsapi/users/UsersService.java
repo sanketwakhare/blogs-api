@@ -3,6 +3,7 @@ package com.sanket.blogsapi.users;
 import com.sanket.blogsapi.users.constants.UsersErrorMessages;
 import com.sanket.blogsapi.users.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,9 +14,12 @@ import java.util.UUID;
 public class UsersService {
 
     private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsersService(@Autowired UsersRepository usersRepository) {
+    public UsersService(@Autowired UsersRepository usersRepository,
+                        @Autowired PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -40,13 +44,20 @@ public class UsersService {
             throw new DuplicateUserEmailException(email);
         }
 
+        // validate password length
+        if (password.length() < 8) {
+            throw new PasswordLengthException();
+        }
+
+        // encode password
+        String encodedPassword = passwordEncoder.encode(password);
+
         // create a new user
         UserEntity newUserEntity = UserEntity.builder()
                 .username(username)
                 .email(email)
-                .password(password)
+                .password(encodedPassword)
                 .build();
-        System.out.println(newUserEntity);
         return usersRepository.save(newUserEntity);
     }
 
@@ -58,11 +69,14 @@ public class UsersService {
      * @return UserEntity
      */
     public UserEntity loginUser(String email, String password) {
-        Optional<UserEntity> user = usersRepository.findByEmailAndPassword(email, password);
-        if (user.isEmpty()) {
-            throw new InvalidCredentialsException();
+        Optional<UserEntity> user = usersRepository.findByEmail(email);
+        if (user.isPresent()) {
+            // validate password
+            if (passwordEncoder.matches(password, user.get().getPassword())) {
+                return user.get();
+            }
         }
-        return user.get();
+        throw new InvalidCredentialsException();
     }
 
     /**
@@ -123,19 +137,19 @@ public class UsersService {
     /**
      * Follow a user
      *
-     * @param userId         user id
+     * @param username       username
      * @param userIdToFollow user id to follow
      */
-    public void followUser(UUID userId, UUID userIdToFollow) {
+    public void followUser(String username, UUID userIdToFollow) {
+        UserEntity user = findByUsername(username);
         // check if user is trying to follow himself
-        if (userId.equals(userIdToFollow)) {
+        if (user.getId().equals(userIdToFollow)) {
             throw new UserCannotFollowException(UsersErrorMessages.CANNOT_FOLLOW_ITSELF);
         }
-        UserEntity user = findById(userId);
         UserEntity userToFollow = findById(userIdToFollow);
 
         // get existing followings
-        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(userId);
+        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(user.getId());
         if (!followings.contains(userToFollow)) {
             followings.add(userToFollow);
             user.setFollowing(followings);
@@ -149,18 +163,18 @@ public class UsersService {
     /**
      * Unfollow a user
      *
-     * @param userId           user id
+     * @param username         username
      * @param userIdToUnfollow user id to unfollow
      */
-    public void unfollowUser(UUID userId, UUID userIdToUnfollow) {
-        if (userId.equals(userIdToUnfollow)) {
+    public void unfollowUser(String username, UUID userIdToUnfollow) {
+        UserEntity user = findByUsername(username);
+        if (user.getId().equals(userIdToUnfollow)) {
             throw new UserCannotUnfollowException(UsersErrorMessages.CANNOT_UNFOLLOW_ITSELF);
         }
-        UserEntity user = findById(userId);
         UserEntity userToUnfollow = findById(userIdToUnfollow);
 
         // get existing followings
-        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(userId);
+        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(user.getId());
         if (followings.contains(userToUnfollow)) {
             followings.remove(userToUnfollow);
             user.setFollowing(followings);
@@ -174,22 +188,22 @@ public class UsersService {
     /**
      * Get followings for a user
      *
-     * @param userId user id
+     * @param username username
      * @return set of user followings
      */
-    public Set<UserEntity> getFollowingsForUserId(UUID userId) {
-        UserEntity user = findById(userId);
+    public Set<UserEntity> getFollowingsForUserId(String username) {
+        UserEntity user = findByUsername(username);
         return usersRepository.getFollowingsForUserId(user.getId());
     }
 
     /**
      * Get followers for a user
      *
-     * @param userId user id
+     * @param username username
      * @return set of user followers
      */
-    public Set<UserEntity> getFollowersForUserId(UUID userId) {
-        UserEntity user = findById(userId);
+    public Set<UserEntity> getFollowersForUser(String username) {
+        UserEntity user = findByUsername(username);
         return usersRepository.getFollowersForUserId(user.getId());
     }
 }

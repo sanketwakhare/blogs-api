@@ -8,7 +8,7 @@ public class UsersErrorMessages {
     public static final String INVALID_CREDENTIALS = "Invalid email or password";
     public static final String INVALID_USER_EMAIL = "Invalid email";
     public static final String USERNAME_SIZE_CONSTRAINT_VIOLATION_ERROR = "Username must be between 3 and 30 characters";
-    public static final String PASSWORD_SIZE_CONSTRAINT_VIOLATION_ERROR = "Password must be between 6 and 30 characters";
+    public static final String PASSWORD_SIZE_CONSTRAINT_VIOLATION_ERROR = "Password must be greater than 8 characters";
 
     /**
      * Follow/Unfollow user error messages

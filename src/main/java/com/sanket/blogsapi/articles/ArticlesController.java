@@ -1,12 +1,12 @@
 package com.sanket.blogsapi.articles;
 
 import com.sanket.blogsapi.articles.dtos.*;
-import com.sanket.blogsapi.services.tokens.TokensService;
 import com.sanket.blogsapi.users.UserEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -19,14 +19,11 @@ import java.util.UUID;
 public class ArticlesController {
 
     private final ArticlesService articlesService;
-    private final TokensService tokensService;
     private final ModelMapper modelMapper;
 
     public ArticlesController(@Autowired ArticlesService articlesService,
-                              @Autowired TokensService tokensService,
                               @Autowired ModelMapper modelMapper) {
         this.articlesService = articlesService;
-        this.tokensService = tokensService;
         this.modelMapper = modelMapper;
     }
 
@@ -62,15 +59,33 @@ public class ArticlesController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
+//    /**
+//     * Get all articles by author ID
+//     *
+//     * @param authorId Author ID
+//     * @return List of articles
+//     */
+//    @GetMapping("/author/{authorId}")
+//    public ResponseEntity<ArticlesSetResponseDTO> getAllArticlesByAuthorId(@PathVariable("authorId") UUID authorId) {
+//        Set<ArticleEntity> articles = articlesService.getAllArticlesByAuthorId(authorId);
+//
+//        // TODO: this model mapping did not work
+//        // ArticlesListResponseDTO responseDTO = modelMapper.map(articles, ArticlesListResponseDTO.class);
+//
+//        // convert to DTO
+//        ArticlesSetResponseDTO responseDTO = mapToArticlesListResponseDTO(articles);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+//    }
+
     /**
-     * Get all articles by author ID
+     * Get all articles by author username
      *
-     * @param authorId Author ID
+     * @param authorName Author name
      * @return List of articles
      */
-    @GetMapping("/author/{authorId}")
-    public ResponseEntity<ArticlesSetResponseDTO> getAllArticlesByAuthorId(@PathVariable("authorId") UUID authorId) {
-        Set<ArticleEntity> articles = articlesService.getAllArticlesByAuthorId(authorId);
+    @GetMapping("/author/{authorName}")
+    public ResponseEntity<ArticlesSetResponseDTO> getAllArticlesByAuthorName(@PathVariable("authorName") String authorName) {
+        Set<ArticleEntity> articles = articlesService.getAllArticlesByAuthorName(authorName);
 
         // TODO: this model mapping did not work
         // ArticlesListResponseDTO responseDTO = modelMapper.map(articles, ArticlesListResponseDTO.class);
@@ -83,15 +98,15 @@ public class ArticlesController {
     /**
      * Create a new article
      *
-     * @param requestDTO  Article details
-     * @param bearerToken Bearer token of the user creating the article
+     * @param requestDTO Article details
+     * @param username   username of the user creating the article
      * @return Created article
      */
     @PostMapping("")
-    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody CreateArticleRequestDTO requestDTO, @RequestHeader("Authorization") String bearerToken) {
-        UUID userId = tokensService.getUserIdFromToken(bearerToken);
+    public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody CreateArticleRequestDTO requestDTO,
+                                                            @AuthenticationPrincipal String username) {
         ArticleEntity article = modelMapper.map(requestDTO, ArticleEntity.class);
-        ArticleEntity newArticle = articlesService.createArticle(article, userId);
+        ArticleEntity newArticle = articlesService.createArticle(article, username);
         ArticleResponseDTO responseDTO = modelMapper.map(newArticle, ArticleResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
@@ -101,12 +116,15 @@ public class ArticlesController {
      *
      * @param updateArticleRequestDTO Article details
      * @param id                      Article ID
+     * @param username                username of the user creating the article
      * @return Updated article
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<ArticleResponseDTO> updateArticle(@RequestBody UpdateArticleRequestDTO updateArticleRequestDTO, @PathVariable("id") UUID id) {
+    public ResponseEntity<ArticleResponseDTO> updateArticle(@RequestBody UpdateArticleRequestDTO updateArticleRequestDTO,
+                                                            @PathVariable("id") UUID id,
+                                                            @AuthenticationPrincipal String username) {
         ArticleEntity articleEntity = modelMapper.map(updateArticleRequestDTO, ArticleEntity.class);
-        ArticleEntity article = articlesService.updateArticle(id, articleEntity);
+        ArticleEntity article = articlesService.updateArticle(id, articleEntity, username);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
     }
@@ -153,17 +171,17 @@ public class ArticlesController {
     /**
      * Like an article
      *
-     * @param articleId   Article ID
-     * @param bearerToken Bearer token of the user liking the article
+     * @param articleId Article ID
+     * @param username  username of the user liking the article
      * @return Article reaction
      */
     @PatchMapping("/like/{id}")
-    public ResponseEntity<ArticleReactionResponseDTO> likeArticle(@PathVariable("id") UUID articleId, @RequestHeader("Authorization") String bearerToken) {
-        UUID userId = tokensService.getUserIdFromToken(bearerToken);
-        ArticleReactionType reaction = articlesService.likeArticle(articleId, userId);
+    public ResponseEntity<ArticleReactionResponseDTO> likeArticle(@PathVariable("id") UUID articleId,
+                                                                  @AuthenticationPrincipal String username) {
+        ArticleReactionType reaction = articlesService.likeArticle(articleId, username);
         ArticleReactionResponseDTO responseDTO = new ArticleReactionResponseDTO();
         responseDTO.setArticleId(articleId);
-        responseDTO.setUserId(userId);
+        responseDTO.setUsername(username);
         responseDTO.setReaction(reaction);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
     }
@@ -171,17 +189,17 @@ public class ArticlesController {
     /**
      * Dislike an article
      *
-     * @param articleId   Article ID
-     * @param bearerToken Bearer token of the user disliking the article
+     * @param articleId Article ID
+     * @param username  username of the user disliking the article
      * @return Article reaction
      */
     @DeleteMapping("/dislike/{id}")
-    public ResponseEntity<ArticleReactionResponseDTO> dislikeArticle(@PathVariable("id") UUID articleId, @RequestHeader("Authorization") String bearerToken) {
-        UUID userId = tokensService.getUserIdFromToken(bearerToken);
-        ArticleReactionType reaction = articlesService.dislikeArticle(articleId, userId);
+    public ResponseEntity<ArticleReactionResponseDTO> dislikeArticle(@PathVariable("id") UUID articleId,
+                                                                     @AuthenticationPrincipal String username) {
+        ArticleReactionType reaction = articlesService.dislikeArticle(articleId, username);
         ArticleReactionResponseDTO responseDTO = new ArticleReactionResponseDTO();
         responseDTO.setArticleId(articleId);
-        responseDTO.setUserId(userId);
+        responseDTO.setUsername(username);
         responseDTO.setReaction(reaction);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
     }

@@ -1,7 +1,9 @@
 package com.sanket.blogsapi.articles;
 
+import com.sanket.blogsapi.articles.constants.ArticlesErrorMessages;
 import com.sanket.blogsapi.articles.dtos.ArticlesFilterCriteriaRequestDTO;
 import com.sanket.blogsapi.articles.exceptions.ArticleNotFoundException;
+import com.sanket.blogsapi.articles.exceptions.UnauthorizedUserException;
 import com.sanket.blogsapi.articles.filters.ArticlesFilter;
 import com.sanket.blogsapi.services.slugs.SlugsService;
 import com.sanket.blogsapi.users.UserEntity;
@@ -32,13 +34,13 @@ public class ArticlesService {
     /**
      * Create an article
      *
-     * @param article Article to be created
-     * @param userId  User ID of the user creating the article
+     * @param article  Article to be created
+     * @param username username of the user creating the article
      * @return Created article
      */
-    public ArticleEntity createArticle(ArticleEntity article, UUID userId) {
+    public ArticleEntity createArticle(ArticleEntity article, String username) {
         // get author details
-        UserEntity author = usersService.findById(userId);
+        UserEntity author = usersService.findByUsername(username);
         Set<UserEntity> authors = new HashSet<>();
         authors.add(author);
 
@@ -82,6 +84,7 @@ public class ArticlesService {
      * @return Published article
      */
     public ArticleEntity publishArticle(UUID id) {
+        // TODO: only author should be able to publish the article
         ArticleEntity article = getArticleById(id);
         article.setStatus(ArticleStatus.PUBLISHED);
         return articlesRepository.save(article);
@@ -94,6 +97,7 @@ public class ArticlesService {
      * @return Deleted article
      */
     public ArticleEntity deleteArticle(UUID id) {
+        // TODO: only author should be able to delete the article
         ArticleEntity article = getArticleById(id);
         article.setStatus(ArticleStatus.DELETED);
         return articlesRepository.save(article);
@@ -106,6 +110,7 @@ public class ArticlesService {
      * @return drafted article
      */
     public ArticleEntity moveArticleToDraft(UUID id) {
+        // TODO: only author should be able to update the article
         ArticleEntity article = getArticleById(id);
         article.setStatus(ArticleStatus.DRAFT);
         return articlesRepository.save(article);
@@ -123,24 +128,35 @@ public class ArticlesService {
     }
 
     /**
+     * Get all articles by author name
+     *
+     * @param authorName Author name
+     * @return List of articles
+     */
+    public Set<ArticleEntity> getAllArticlesByAuthorName(String authorName) {
+        UserEntity author = usersService.findByUsername(authorName);
+        return articlesRepository.findAllByAuthors(author);
+    }
+
+    /**
      * Update an article
      *
      * @param id            Article ID
      * @param articleEntity Article to be updated
      * @return Updated article
      */
-    public ArticleEntity updateArticle(UUID id, ArticleEntity articleEntity) {
+    public ArticleEntity updateArticle(UUID id, ArticleEntity articleEntity, String username) {
         ArticleEntity article = getArticleById(id);
 
+        // get author details
+        UserEntity currentLoggedInUser = usersService.findByUsername(username);
+        // only author should be able to update the article
+        if (!article.getAuthors().contains(currentLoggedInUser)) {
+            throw new UnauthorizedUserException(ArticlesErrorMessages.USER_CANNOT_MODIFY_ARTICLE);
+        }
+
         // by creating an object from builder, we are invoking validations defined at field level
-        ArticleEntity newArticle = ArticleEntity.builder()
-                .title(articleEntity.getTitle())
-                .subtitle(articleEntity.getSubtitle())
-                .body(articleEntity.getBody())
-                .slug(slugsService.generateSlug(articleEntity.getTitle()))
-                .authors(article.getAuthors())
-                .status(article.getStatus())
-                .tags(articleEntity.getTags())
+        ArticleEntity newArticle = ArticleEntity.builder().title(articleEntity.getTitle()).subtitle(articleEntity.getSubtitle()).body(articleEntity.getBody()).slug(slugsService.generateSlug(articleEntity.getTitle())).authors(article.getAuthors()).status(article.getStatus()).tags(articleEntity.getTags())
                 .build();
 
         // if object creation is successful, update the existing article
@@ -159,12 +175,12 @@ public class ArticlesService {
      * Like an article
      *
      * @param articleId Article ID
-     * @param userId    User ID
+     * @param username  username of the user liking the article (currently logged-in user)
      * @return ArticleReactionType
      */
-    public ArticleReactionType likeArticle(UUID articleId, UUID userId) {
+    public ArticleReactionType likeArticle(UUID articleId, String username) {
         ArticleEntity article = getArticleById(articleId);
-        UserEntity user = usersService.findById(userId);
+        UserEntity user = usersService.findByUsername(username);
 
         Set<UserEntity> likedByUsers = articlesRepository.findArticleLikesById(articleId);
         if (!likedByUsers.contains(user)) {
@@ -180,12 +196,12 @@ public class ArticlesService {
      * Dislike an article
      *
      * @param articleId Article ID
-     * @param userId    User ID
+     * @param username  username of the user liking the article (currently logged-in user)
      * @return ArticleReactionType
      */
-    public ArticleReactionType dislikeArticle(UUID articleId, UUID userId) {
+    public ArticleReactionType dislikeArticle(UUID articleId, String username) {
         ArticleEntity article = getArticleById(articleId);
-        UserEntity user = usersService.findById(userId);
+        UserEntity user = usersService.findByUsername(username);
 
         Set<UserEntity> likedByUsers = articlesRepository.findArticleLikesById(articleId);
         if (likedByUsers.contains(user)) {

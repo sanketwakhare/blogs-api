@@ -34,9 +34,7 @@ public class UserEntity extends BaseEntity {
     private String email;
 
     @NonNull
-    @Size(min = 6, max = 30,
-            message = UsersErrorMessages.PASSWORD_SIZE_CONSTRAINT_VIOLATION_ERROR)
-    @Column(name = "password", nullable = false, length = 30)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column

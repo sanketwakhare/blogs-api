@@ -6,11 +6,11 @@ import com.sanket.blogsapi.comments.dtos.CommentsListResponseDTO;
 import com.sanket.blogsapi.comments.dtos.CreateCommentRequestDTO;
 import com.sanket.blogsapi.comments.dtos.UpdateCommentRequestDTO;
 import com.sanket.blogsapi.common.dtos.ResponseDTO;
-import com.sanket.blogsapi.services.tokens.TokensService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,14 +22,11 @@ import java.util.UUID;
 public class CommentsController {
     private final CommentsService commentsService;
     private final ModelMapper modelMapper;
-    private final TokensService tokensService;
 
     public CommentsController(@Autowired CommentsService commentsService,
-                              @Autowired ModelMapper modelMapper,
-                              @Autowired TokensService tokensService) {
+                              @Autowired ModelMapper modelMapper) {
         this.commentsService = commentsService;
         this.modelMapper = modelMapper;
-        this.tokensService = tokensService;
     }
 
     /**
@@ -41,13 +38,12 @@ public class CommentsController {
     @PostMapping("")
     public ResponseEntity<CommentResponseDTO> createComment(
             @RequestBody CreateCommentRequestDTO requestDTO,
-            @RequestHeader("Authorization") String bearerToken) {
+            @AuthenticationPrincipal String username) {
 
-        UUID commenterId = tokensService.getUserIdFromToken(bearerToken);
         UUID articleId = requestDTO.getArticleId();
 
         CommentEntity commentEntity = modelMapper.map(requestDTO, CommentEntity.class);
-        CommentEntity comment = commentsService.createComment(commentEntity, commenterId, articleId);
+        CommentEntity comment = commentsService.createComment(commentEntity, username, articleId);
 
         CommentResponseDTO responseDTO = modelMapper.map(comment, CommentResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -77,21 +73,19 @@ public class CommentsController {
     /**
      * Update a comment
      *
-     * @param commentId   Comment ID
-     * @param requestDTO  Comment details
-     * @param bearerToken Bearer token of the commenter
+     * @param commentId  Comment ID
+     * @param requestDTO Comment details
+     * @param username   username of the commenter
      * @return Updated comment
      */
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentResponseDTO> updateComment(
             @PathVariable("commentId") UUID commentId,
             @RequestBody UpdateCommentRequestDTO requestDTO,
-            @RequestHeader("Authorization") String bearerToken) {
-
-        UUID commenterId = tokensService.getUserIdFromToken(bearerToken);
+            @AuthenticationPrincipal String username) {
 
         CommentEntity commentEntity = modelMapper.map(requestDTO, CommentEntity.class);
-        CommentEntity comment = commentsService.updateComment(commentId, commentEntity, commenterId);
+        CommentEntity comment = commentsService.updateComment(commentId, commentEntity, username);
 
         CommentResponseDTO responseDTO = modelMapper.map(comment, CommentResponseDTO.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
@@ -116,18 +110,16 @@ public class CommentsController {
     /**
      * Delete a comment
      *
-     * @param commentId   Comment ID
-     * @param bearerToken Bearer token of the commenter
+     * @param commentId Comment ID
+     * @param username  username of the commenter
      * @return Deleted comment
      */
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ResponseDTO> deleteComment(
             @PathVariable("commentId") UUID commentId,
-            @RequestHeader("Authorization") String bearerToken) {
+            @AuthenticationPrincipal String username) {
 
-        UUID commenterId = tokensService.getUserIdFromToken(bearerToken);
-
-        commentsService.deleteComment(commentId, commenterId);
+        commentsService.deleteComment(commentId, username);
 
         ResponseDTO responseDTO = new ResponseDTO(CommentsSuccessMessages.COMMENT_DELETED);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
