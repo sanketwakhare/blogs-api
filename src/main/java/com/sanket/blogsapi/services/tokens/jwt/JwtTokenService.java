@@ -1,4 +1,4 @@
-package com.sanket.blogsapi.services.jwt;
+package com.sanket.blogsapi.services.tokens.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

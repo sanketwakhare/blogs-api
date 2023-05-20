@@ -1,6 +1,6 @@
 package com.sanket.blogsapi;
 
-import com.sanket.blogsapi.services.jwt.JwtTokenService;
+import com.sanket.blogsapi.services.tokens.jwt.JwtTokenService;
 import com.sanket.blogsapi.services.tokens.TokenService;
 import com.sanket.blogsapi.services.tokens.sst.UserTokenRepository;
 import com.sanket.blogsapi.services.tokens.sst.UserTokenService;
