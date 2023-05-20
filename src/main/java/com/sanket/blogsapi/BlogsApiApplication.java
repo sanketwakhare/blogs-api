@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 @EnableJpaAuditing() // to enable auditing
@@ -16,10 +18,16 @@ public class BlogsApiApplication {
         SpringApplication.run(BlogsApiApplication.class, args);
     }
 
-    @Bean
+    @Bean(name = "modelMapper")
     @Scope(BeanDefinition.SCOPE_SINGLETON)
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean(name = "passwordEncoder")
+    @Scope(BeanDefinition.SCOPE_SINGLETON)
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

@@ -3,6 +3,7 @@ package com.sanket.blogsapi.users;
 import com.sanket.blogsapi.users.constants.UsersErrorMessages;
 import com.sanket.blogsapi.users.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,9 +14,12 @@ import java.util.UUID;
 public class UsersService {
 
     private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsersService(@Autowired UsersRepository usersRepository) {
+    public UsersService(@Autowired UsersRepository usersRepository,
+                        @Autowired PasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -40,13 +44,15 @@ public class UsersService {
             throw new DuplicateUserEmailException(email);
         }
 
+        // encode password
+        String encodedPassword = passwordEncoder.encode(password);
+
         // create a new user
         UserEntity newUserEntity = UserEntity.builder()
                 .username(username)
                 .email(email)
-                .password(password)
+                .password(encodedPassword)
                 .build();
-        System.out.println(newUserEntity);
         return usersRepository.save(newUserEntity);
     }
 
@@ -58,11 +64,14 @@ public class UsersService {
      * @return UserEntity
      */
     public UserEntity loginUser(String email, String password) {
-        Optional<UserEntity> user = usersRepository.findByEmailAndPassword(email, password);
-        if (user.isEmpty()) {
-            throw new InvalidCredentialsException();
+        Optional<UserEntity> user = usersRepository.findByEmail(email);
+        if (user.isPresent()) {
+            // validate password
+            if (passwordEncoder.matches(password, user.get().getPassword())) {
+                return user.get();
+            }
         }
-        return user.get();
+        throw new InvalidCredentialsException();
     }
 
     /**

@@ -58,7 +58,7 @@ public class UsersController {
         UserEntity user = modelMapper.map(requestDTO, UserEntity.class);
         UserEntity loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
         UserResponseDTO userResponseDTO = modelMapper.map(loggedInUser, UserResponseDTO.class);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
+         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
     }
 
     /**
