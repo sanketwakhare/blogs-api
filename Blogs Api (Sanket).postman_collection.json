@@ -18,7 +18,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -51,6 +51,9 @@
 				{
 					"name": "get article by id",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -71,6 +74,16 @@
 				{
 					"name": "delete article",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -91,6 +104,16 @@
 				{
 					"name": "publish article",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
 						"url": {
@@ -112,6 +135,16 @@
 				{
 					"name": "move article to draft",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
 						"url": {
@@ -131,12 +164,15 @@
 					"response": []
 				},
 				{
-					"name": "find all by author id",
+					"name": "find all by author name",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8823/articles/author/{{userId}}",
+							"raw": "http://localhost:8823/articles/author/{{authorName}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -145,7 +181,7 @@
 							"path": [
 								"articles",
 								"author",
-								"{{userId}}"
+								"{{authorName}}"
 							]
 						}
 					},
@@ -154,6 +190,16 @@
 				{
 					"name": "update article",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
@@ -188,7 +234,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -219,7 +265,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -250,7 +296,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -281,7 +327,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -290,7 +336,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"authorId\": \"{{userId}}\",\r\n    \"tags\": [\"javascript\"],\r\n    \"fromDate\": \"2023-05-01\",\r\n    \"toDate\": \"2023-05-20\",\r\n    \"sortCriteria\": {\r\n        \"direction\": \"ASC\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"authorId\": \"{{userId}}\",\r\n    \"tags\": [\"javascript\"],\r\n    \"fromDate\": \"2023-05-01\",\r\n    \"toDate\": \"2023-12-30\",\r\n    \"sortCriteria\": {\r\n        \"direction\": \"ASC\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -320,7 +366,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -363,7 +409,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"gathaw\",\r\n    \"email\": \"gathaw@example.com\",\r\n    \"password\": \"gathaw@pass\"\r\n}",
+							"raw": "{\r\n    \"username\": \"user7\",\r\n    \"email\": \"user7@example.com\",\r\n    \"password\": \"user7@pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -392,7 +438,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"gathaw@example.com\",\r\n    \"password\": \"gathaw@pass\"\r\n}",
+							"raw": "{\r\n    \"email\": \"user7@example.com\",\r\n    \"password\": \"user7@pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -417,6 +463,16 @@
 				{
 					"name": "update bio",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "PATCH",
 						"header": [],
 						"body": {
@@ -446,6 +502,16 @@
 				{
 					"name": "get user by id",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -471,16 +537,29 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
 						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Cookie",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userIdToFollow\": \"22b6a04b-ecab-43be-802a-00c88677d5ba\"\r\n}",
+							"raw": "{\r\n    \"userIdToFollow\": \"79de38b0-1073-43a2-badd-db20b0aa6ee2\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -510,7 +589,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -519,7 +598,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userIdToUnfollow\": \"22b6a04b-ecab-43be-802a-00c88677d5ba\"\r\n}",
+							"raw": "{\r\n    \"userIdToUnfollow\": \"79de38b0-1073-43a2-badd-db20b0aa6ee2\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -549,7 +628,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -614,7 +693,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -647,6 +726,9 @@
 				{
 					"name": "get all comments for an article",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -673,7 +755,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -707,6 +789,9 @@
 				{
 					"name": "find comment by id",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -732,7 +817,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{userId}}",
+									"value": "{{bearerToken}}",
 									"type": "string"
 								}
 							]
@@ -780,11 +865,11 @@
 	"variable": [
 		{
 			"key": "userId",
-			"value": "2d40026b-298b-4b84-929d-fe950d9f40f7"
+			"value": "24e5080a-9145-43e7-99ca-a05df996fa2a"
 		},
 		{
 			"key": "articleId",
-			"value": "d144b558-69d6-4f94-8d3e-b3f42002e5f7",
+			"value": "a3a58520-1f40-47d7-b243-0817148c8ba6",
 			"type": "string"
 		},
 		{
@@ -794,6 +879,15 @@
 		{
 			"key": "commentId",
 			"value": "52fede8c-9bde-4ee2-9567-38badd072cd7"
+		},
+		{
+			"key": "bearerToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNyIsImlzcyI6ImJsb2dzLWFwaSIsImlhdCI6MTY4NDYwNTI5MywiZXhwIjoxNjg0NjA4ODkzfQ.Yvl0W5aWy0J88OHYaV4ZifSelv8tT1HYmd5sw7YXGHk"
+		},
+		{
+			"key": "authorName",
+			"value": "user7",
+			"type": "string"
 		}
 	]
 }
