@@ -137,19 +137,19 @@ public class UsersService {
     /**
      * Follow a user
      *
-     * @param userId         user id
+     * @param username       username
      * @param userIdToFollow user id to follow
      */
-    public void followUser(UUID userId, UUID userIdToFollow) {
+    public void followUser(String username, UUID userIdToFollow) {
+        UserEntity user = findByUsername(username);
         // check if user is trying to follow himself
-        if (userId.equals(userIdToFollow)) {
+        if (user.getId().equals(userIdToFollow)) {
             throw new UserCannotFollowException(UsersErrorMessages.CANNOT_FOLLOW_ITSELF);
         }
-        UserEntity user = findById(userId);
         UserEntity userToFollow = findById(userIdToFollow);
 
         // get existing followings
-        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(userId);
+        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(user.getId());
         if (!followings.contains(userToFollow)) {
             followings.add(userToFollow);
             user.setFollowing(followings);
@@ -163,18 +163,18 @@ public class UsersService {
     /**
      * Unfollow a user
      *
-     * @param userId           user id
+     * @param username         username
      * @param userIdToUnfollow user id to unfollow
      */
-    public void unfollowUser(UUID userId, UUID userIdToUnfollow) {
-        if (userId.equals(userIdToUnfollow)) {
+    public void unfollowUser(String username, UUID userIdToUnfollow) {
+        UserEntity user = findByUsername(username);
+        if (user.getId().equals(userIdToUnfollow)) {
             throw new UserCannotUnfollowException(UsersErrorMessages.CANNOT_UNFOLLOW_ITSELF);
         }
-        UserEntity user = findById(userId);
         UserEntity userToUnfollow = findById(userIdToUnfollow);
 
         // get existing followings
-        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(userId);
+        Set<UserEntity> followings = usersRepository.getFollowingsForUserId(user.getId());
         if (followings.contains(userToUnfollow)) {
             followings.remove(userToUnfollow);
             user.setFollowing(followings);
@@ -188,22 +188,22 @@ public class UsersService {
     /**
      * Get followings for a user
      *
-     * @param userId user id
+     * @param username username
      * @return set of user followings
      */
-    public Set<UserEntity> getFollowingsForUserId(UUID userId) {
-        UserEntity user = findById(userId);
+    public Set<UserEntity> getFollowingsForUserId(String username) {
+        UserEntity user = findByUsername(username);
         return usersRepository.getFollowingsForUserId(user.getId());
     }
 
     /**
      * Get followers for a user
      *
-     * @param userId user id
+     * @param username username
      * @return set of user followers
      */
-    public Set<UserEntity> getFollowersForUserId(UUID userId) {
-        UserEntity user = findById(userId);
+    public Set<UserEntity> getFollowersForUser(String username) {
+        UserEntity user = findByUsername(username);
         return usersRepository.getFollowersForUserId(user.getId());
     }
 }

@@ -34,6 +34,7 @@ public class UserAuthenticationManager implements AuthenticationManager {
             String username = tokenService.getUsernameFromToken(userAuthentication.getCredentials());
             if (!Objects.isNull(username)) {
                 userAuthentication.setUsername(username);
+                userAuthentication.setAuthenticated(true);
                 return userAuthentication;
             }
         }

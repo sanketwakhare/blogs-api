@@ -14,4 +14,10 @@ public class ArticlesExceptionHandler {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDTO);
     }
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUnauthorizedUserException(UnauthorizedUserException exception) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDTO);
+    }
 }

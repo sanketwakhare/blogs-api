@@ -32,15 +32,15 @@ public class CommentsService {
      * Create a comment
      *
      * @param commentEntity Comment details
-     * @param commenterId   User ID of the commenter
+     * @param commenterName Username of the commenter (currently logged-in user)
      * @param articleId     Article ID of the article
      * @return newly created comment
      * @throws ArticleNotFoundException if article is not found
      * @throws UserNotFoundException    if user is not found
      */
-    public CommentEntity createComment(CommentEntity commentEntity, UUID commenterId, UUID articleId) {
+    public CommentEntity createComment(CommentEntity commentEntity, String commenterName, UUID articleId) {
 
-        UserEntity commenter = usersService.findById(commenterId);
+        UserEntity commenter = usersService.findByUsername(commenterName);
         ArticleEntity article = articlesService.getArticleById(articleId);
 
         CommentEntity newComment = CommentEntity.builder()
@@ -74,16 +74,16 @@ public class CommentsService {
      *
      * @param commentId     comment id
      * @param commentEntity comment entity
-     * @param commenterId   commenter id
+     * @param commenterName commenter username (currently logged-in user)
      * @return updated comment
      * @throws CommentNotFoundException      if comment is not found
      * @throws CommentNotModifiableException if comment is not modifiable
      * @throws UserNotFoundException         if user is not found
      */
-    public CommentEntity updateComment(UUID commentId, CommentEntity commentEntity, UUID commenterId) {
+    public CommentEntity updateComment(UUID commentId, CommentEntity commentEntity, String commenterName) {
         // check if comment exists
         CommentEntity comment = findById(commentId);
-        UserEntity commenter = usersService.findById(commenterId);
+        UserEntity commenter = usersService.findByUsername(commenterName);
 
         // only comment author can modify the comment
         if (commenter.getId() != comment.getAuthor().getId()) {
@@ -126,14 +126,13 @@ public class CommentsService {
     /**
      * Delete a comment by id
      *
-     * @param commentId   comment id
-     * @param commenterId commenter id
-     * @return confirmation message
+     * @param commentId     comment id
+     * @param commenterName username of the commenter (currently logged-in user)
      * @throws CommentNotFoundException if comment is not found
      */
-    public void deleteComment(UUID commentId, UUID commenterId) {
+    public void deleteComment(UUID commentId, String commenterName) {
         CommentEntity comment = findById(commentId);
-        UserEntity commenter = usersService.findById(commenterId);
+        UserEntity commenter = usersService.findByUsername(commenterName);
 
         // only comment author can delete the comment
         if (commenter.getId() != comment.getAuthor().getId()) {

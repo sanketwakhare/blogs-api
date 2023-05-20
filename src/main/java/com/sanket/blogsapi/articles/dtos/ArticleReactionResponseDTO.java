@@ -17,7 +17,7 @@ public class ArticleReactionResponseDTO {
     @NonNull
     private UUID articleId;
     @NonNull
-    private UUID userId;
+    private String username;
     @NonNull
     @Enumerated(value = EnumType.STRING)
     private ArticleReactionType reaction;
