@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 
@@ -17,9 +19,17 @@ import org.springframework.security.web.authentication.AuthenticationFilter;
 @EnableWebSecurity // to enable web security
 public class SecurityConfig {
 
+    private final AuthenticationEntryPoint delegatedAuthenticationEntryPoint;
+
+    private final AccessDeniedHandler restAccessDeniedHandler;
+
     private final AuthenticationFilter userAuthenticationFilter;
 
-    public SecurityConfig(@Autowired AuthenticationFilter userAuthenticationFilter) {
+    public SecurityConfig(@Autowired AuthenticationEntryPoint delegatedAuthenticationEntryPoint,
+                          @Autowired AccessDeniedHandler restAccessDeniedHandler,
+                          @Autowired AuthenticationFilter userAuthenticationFilter) {
+        this.delegatedAuthenticationEntryPoint = delegatedAuthenticationEntryPoint;
+        this.restAccessDeniedHandler = restAccessDeniedHandler;
         this.userAuthenticationFilter = userAuthenticationFilter;
     }
 
@@ -38,8 +48,16 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/articles/search").permitAll()
                 .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/signup", "/users/login").permitAll()
+                // authenticate role specific requests
+                .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole("ADMIN")
                 // authenticate all others requests
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                // configure exception handlers
+                .exceptionHandling()
+                .accessDeniedHandler(restAccessDeniedHandler)
+                .authenticationEntryPoint(delegatedAuthenticationEntryPoint);
+
         // add the user authentication filter before the anonymous authentication filter
         http.addFilterBefore(userAuthenticationFilter, AnonymousAuthenticationFilter.class);
         return http.build();

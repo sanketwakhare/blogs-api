@@ -2,8 +2,10 @@ package com.sanket.blogsapi.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -30,7 +32,7 @@ public class UserAuthentication implements Authentication {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // TODO: Implement this method to get the roles of the currently authenticated user
-        return null;
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     /**

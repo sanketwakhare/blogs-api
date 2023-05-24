@@ -54,13 +54,13 @@ public class UsersController {
      * @return logged in user
      */
     @PostMapping("/login")
-    public ResponseEntity<UserResponseDTO> loginUser(
+    public ResponseEntity<LoginUserResponseDTO> loginUser(
             @RequestBody LoginUserRequestDTO requestDTO) {
         UserEntity user = modelMapper.map(requestDTO, UserEntity.class);
         UserEntity loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
-        UserResponseDTO userResponseDTO = modelMapper.map(loggedInUser, UserResponseDTO.class);
-        userResponseDTO.setToken(tokenService.createAuthToken(loggedInUser.getUsername()));
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
+        LoginUserResponseDTO loginUserResponseDTO = modelMapper.map(loggedInUser, LoginUserResponseDTO.class);
+        loginUserResponseDTO.setToken(tokenService.createAuthToken(loggedInUser.getUsername()));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(loginUserResponseDTO);
     }
 
     /**

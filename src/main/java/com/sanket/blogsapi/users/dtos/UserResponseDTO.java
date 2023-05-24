@@ -19,7 +19,6 @@ public class UserResponseDTO {
     @NonNull
     private String email;
     private String bio;
-    private String token;
     private Date createdAt;
     private Date updatedAt;
 }
