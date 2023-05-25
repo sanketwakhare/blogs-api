@@ -34,6 +34,7 @@ public class ArticlesFilter {
         }
         // filter by tags
         Set<String> tags = filterCriteria.getTags();
+        if(Objects.isNull(tags)) tags = new HashSet<>(); // to avoid null pointer exception (if tags is null)
         tags = tags.stream().filter(tag -> !tag.isBlank()).collect(Collectors.toSet());
         if (!tags.isEmpty()) {
             Set<String> finalTags = tags;

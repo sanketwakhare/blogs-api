@@ -68,6 +68,7 @@ public class ArticlesService {
      *
      * @param id Article ID
      * @return Article
+     * @throws ArticleNotFoundException if article is not found
      */
     public ArticleEntity getArticleById(UUID id) {
         Optional<ArticleEntity> articleEntity = articlesRepository.findById(id);
@@ -75,6 +76,34 @@ public class ArticlesService {
             throw new ArticleNotFoundException(id);
         }
         return articleEntity.get();
+    }
+
+    /**
+     * Get an article by slug
+     *
+     * @param slug Article slug
+     * @return Article
+     * @throws ArticleNotFoundException if article is not found
+     */
+    public ArticleEntity getArticleBySlug(String slug) {
+        Optional<ArticleEntity> articleEntity = articlesRepository.findBySlug(slug);
+        if (articleEntity.isEmpty()) {
+            throw new ArticleNotFoundException();
+        }
+        return articleEntity.get();
+    }
+
+    public ArticleEntity getArticleBySlugOrUUID(String slugOrUUID) {
+        Optional<ArticleEntity> articleEntity = articlesRepository.findBySlug(slugOrUUID);
+        if (articleEntity.isPresent()) {
+            return articleEntity.get();
+        }
+        try {
+            UUID id = UUID.fromString(slugOrUUID);
+            return getArticleById(id);
+        } catch (IllegalArgumentException e) {
+            throw new ArticleNotFoundException();
+        }
     }
 
     /**

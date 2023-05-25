@@ -1,7 +1,6 @@
 package com.sanket.blogsapi.articles;
 
 import com.sanket.blogsapi.users.UserEntity;
-import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -23,5 +22,8 @@ public interface ArticlesRepository extends JpaRepository<ArticleEntity, UUID> {
 
     @Query("SELECT a.likedBy FROM articles a WHERE a.id =:articleId")
     Set<UserEntity> findArticleLikesById(UUID articleId);
+
+    @Query("SELECT a FROM articles a WHERE a.slug = :slug")
+    Optional<ArticleEntity> findBySlug(String slug);
 
 }

@@ -46,15 +46,30 @@ public class ArticlesController {
         //  4. add filter by date range `?from=2021-01-01&to=2021-01-31`
     }
 
+    /*
     /**
      * Get an article by ID
      *
      * @param id Article ID
      * @return Article
      */
+    /*
     @GetMapping("/{id}")
     public ResponseEntity<ArticleResponseDTO> getArticleById(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.getArticleById(id);
+        ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+    }*/
+
+    /**
+     * Get an article by slug ID or UUID
+     *
+     * @param slugIdOrUUID Slug ID or UUID
+     * @return Article
+     */
+    @GetMapping("/{slugIdOrUUID}")
+    public ResponseEntity<ArticleResponseDTO> getArticleBySlugId(@PathVariable("slugIdOrUUID") String slugIdOrUUID) {
+        ArticleEntity article = articlesService.getArticleBySlugOrUUID(slugIdOrUUID);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }

@@ -18,11 +18,18 @@ public class SlugsService {
      */
     public String generateSlug(String title) {
         try {
+            String randomHex = getRandomHex();
             return title.toLowerCase()
                     .replaceAll("[:;,.~`()+*&^%#$@!]", CommonConstants.EMPTY_STRING)
-                    .replaceAll(CommonConstants.SPACE, CommonConstants.HYPHEN);
+                    .replaceAll(CommonConstants.SPACE, CommonConstants.HYPHEN)
+                    + CommonConstants.HYPHEN + randomHex;
         } catch (Exception e) {
             throw new SlugGenerationException(title);
         }
+    }
+
+    private String getRandomHex() {
+        long random = (long) (Math.random() * 100000000000000L);
+        return Long.toHexString(random);
     }
 }
