@@ -44,6 +44,7 @@ public class SecurityConfig {
         // security config which allows only authenticated requests
         http.csrf().disable();
         http.authorizeHttpRequests()
+
                 // permit public urls
                 .requestMatchers(HttpMethod.GET, "/articles/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/articles/search").permitAll()
@@ -51,12 +52,18 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/users/signup", "/users/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/users/followers/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/users/followings/**").permitAll()
+
                 // authenticate role specific requests
-                .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole(RolesEnum.ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/roles").hasRole(RolesEnum.ADMIN.name())
+                .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole(RolesEnum.ADMIN.name())
+
+                // this configuration is not required as we are using @PreAuthorize annotation in the controller
+                // .requestMatchers(HttpMethod.POST, "/roles/**").hasRole(RolesEnum.ADMIN.name())
+                // .requestMatchers(HttpMethod.DELETE, "/roles/**").hasRole(RolesEnum.ADMIN.name())
+
                 // authenticate all others requests
                 .anyRequest().authenticated()
                 .and()
+
                 // configure exception handlers
                 .exceptionHandling()
                 .accessDeniedHandler(restAccessDeniedHandler)
@@ -64,6 +71,7 @@ public class SecurityConfig {
 
         // add the user authentication filter before the anonymous authentication filter
         http.addFilterBefore(userAuthenticationFilter, AnonymousAuthenticationFilter.class);
+
         return http.build();
     }
 }
