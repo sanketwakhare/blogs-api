@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -118,6 +119,8 @@ public class ArticlesController {
      * @return Created article
      */
     @PostMapping("")
+    // allow only logged-in users or admins to create articles
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.equals(#username)")
     public ResponseEntity<ArticleResponseDTO> createArticle(@RequestBody CreateArticleRequestDTO requestDTO,
                                                             @AuthenticationPrincipal String username) {
         ArticleEntity article = modelMapper.map(requestDTO, ArticleEntity.class);
@@ -135,6 +138,8 @@ public class ArticlesController {
      * @return Updated article
      */
     @PatchMapping("/{id}")
+    // allow only corresponding author(s) or admins to update articles
+    @PreAuthorize("hasRole('ADMIN') or @articlesService.getArticleById(#id).getAuthors().contains(@usersService.findByUsername(authentication.principal))")
     public ResponseEntity<ArticleResponseDTO> updateArticle(@RequestBody UpdateArticleRequestDTO updateArticleRequestDTO,
                                                             @PathVariable("id") UUID id,
                                                             @AuthenticationPrincipal String username) {
@@ -151,6 +156,8 @@ public class ArticlesController {
      * @return Published article
      */
     @PatchMapping("/publish/{id}")
+    // allow only corresponding author(s) or admins to publish articles
+    @PreAuthorize("hasRole('ADMIN') or @articlesService.getArticleById(#id).getAuthors().contains(@usersService.findByUsername(authentication.principal))")
     public ResponseEntity<ArticleResponseDTO> publishArticle(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.publishArticle(id);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
@@ -164,6 +171,8 @@ public class ArticlesController {
      * @return Deleted article
      */
     @DeleteMapping("/{id}")
+    // allow only corresponding author(s) or admins to delete articles
+    @PreAuthorize("hasRole('ADMIN') or @articlesService.getArticleById(#id).getAuthors().contains(@usersService.findByUsername(authentication.principal))")
     public ResponseEntity<ArticleResponseDTO> deleteArticle(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.deleteArticle(id);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);
@@ -177,6 +186,8 @@ public class ArticlesController {
      * @return Drafted article
      */
     @PatchMapping("/move-to-draft/{id}")
+    // allow only corresponding author(s) or admins to move articles to draft
+    @PreAuthorize("hasRole('ADMIN') or @articlesService.getArticleById(#id).getAuthors().contains(@usersService.findByUsername(authentication.principal))")
     public ResponseEntity<ArticleResponseDTO> moveArticleToDraft(@PathVariable("id") UUID id) {
         ArticleEntity article = articlesService.moveArticleToDraft(id);
         ArticleResponseDTO responseDTO = modelMapper.map(article, ArticleResponseDTO.class);

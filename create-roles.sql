@@ -28,3 +28,9 @@ select @AdminRoleId, @AdminRole;
 /*add ADMIN role for a superadmin user*/
 insert into users_roles (users_id, roles_id)
 values (@SuperAdminUserId, @AdminRoleId);
+
+/*get assigned roles for a user*/
+select r.role from roles r, users u, users_roles ur
+              where r.id = ur.roles_id
+                and u.id = ur.users_id
+                and u.username = 'superadmin';
