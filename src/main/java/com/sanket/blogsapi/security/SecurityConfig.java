@@ -1,5 +1,6 @@
 package com.sanket.blogsapi.security;
 
+import com.sanket.blogsapi.roles.RolesEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,7 +50,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/signup", "/users/login").permitAll()
                 // authenticate role specific requests
-                .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole(RolesEnum.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/roles").hasRole(RolesEnum.ADMIN.name())
                 // authenticate all others requests
                 .anyRequest().authenticated()
                 .and()

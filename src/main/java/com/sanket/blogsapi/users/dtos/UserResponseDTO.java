@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -21,4 +22,5 @@ public class UserResponseDTO {
     private String bio;
     private Date createdAt;
     private Date updatedAt;
+    private Set<String> authorities;
 }

@@ -1,5 +1,8 @@
 package com.sanket.blogsapi.users;
 
+import com.sanket.blogsapi.roles.RoleEntity;
+import com.sanket.blogsapi.roles.RolesEnum;
+import com.sanket.blogsapi.roles.RolesService;
 import com.sanket.blogsapi.users.constants.UsersErrorMessages;
 import com.sanket.blogsapi.users.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +19,14 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final RolesService rolesService;
+
     public UsersService(@Autowired UsersRepository usersRepository,
-                        @Autowired PasswordEncoder passwordEncoder) {
+                        @Autowired PasswordEncoder passwordEncoder,
+                        @Autowired RolesService rolesService) {
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
+        this.rolesService = rolesService;
     }
 
     /**
@@ -52,11 +59,15 @@ public class UsersService {
         // encode password
         String encodedPassword = passwordEncoder.encode(password);
 
+        // default role for a user
+        RoleEntity roleEntity = rolesService.getRoleByName(RolesEnum.USER);
+
         // create a new user
         UserEntity newUserEntity = UserEntity.builder()
                 .username(username)
                 .email(email)
                 .password(encodedPassword)
+                .roles(Set.of(roleEntity))
                 .build();
         return usersRepository.save(newUserEntity);
     }

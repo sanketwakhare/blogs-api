@@ -2,6 +2,7 @@ package com.sanket.blogsapi.users;
 
 import com.sanket.blogsapi.common.BaseEntity;
 import com.sanket.blogsapi.common.constants.CommonConstants;
+import com.sanket.blogsapi.roles.RoleEntity;
 import com.sanket.blogsapi.users.constants.UsersErrorMessages;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import java.util.Set;
 
@@ -62,4 +65,8 @@ public class UserEntity extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "following_id", referencedColumnName = "id")
     )
     private List<UserEntity> following; */
+
+    @ManyToMany
+    @LazyCollection(value = LazyCollectionOption.FALSE)
+    private Set<RoleEntity> roles;
 }

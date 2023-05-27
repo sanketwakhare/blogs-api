@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -44,6 +45,7 @@ public class UsersController {
         UserEntity savedUser = userService.createUser(user.getUsername(),
                 user.getEmail(), user.getPassword());
         UserResponseDTO userResponseDTO = modelMapper.map(savedUser, UserResponseDTO.class);
+        mapAuthorities(savedUser, userResponseDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     }
 
@@ -60,6 +62,7 @@ public class UsersController {
         UserEntity loggedInUser = userService.loginUser(user.getEmail(), user.getPassword());
         LoginUserResponseDTO loginUserResponseDTO = modelMapper.map(loggedInUser, LoginUserResponseDTO.class);
         loginUserResponseDTO.setToken(tokenService.createAuthToken(loggedInUser.getUsername()));
+        mapAuthorities(loggedInUser, loginUserResponseDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(loginUserResponseDTO);
     }
 
@@ -77,6 +80,7 @@ public class UsersController {
         UserEntity user = modelMapper.map(requestDTO, UserEntity.class);
         UserEntity updatedUser = userService.updateBio(id, user.getBio());
         UserResponseDTO userResponseDTO = modelMapper.map(updatedUser, UserResponseDTO.class);
+        mapAuthorities(updatedUser, userResponseDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
     }
 
@@ -91,7 +95,15 @@ public class UsersController {
             @PathVariable("id") UUID id) {
         UserEntity user = userService.findById(id);
         UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+        mapAuthorities(user, userResponseDTO);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
+    }
+
+    private void mapAuthorities(UserEntity user, UserResponseDTO userResponseDTO) {
+        // set authorities
+        Set<String> authorities = new HashSet<>();
+        user.getRoles().forEach(role -> authorities.add(role.getRole().name()));
+        userResponseDTO.setAuthorities(authorities);
     }
 
     /**

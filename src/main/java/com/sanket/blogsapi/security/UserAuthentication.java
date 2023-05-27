@@ -2,11 +2,11 @@ package com.sanket.blogsapi.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * This is Authentication object represents the currently authenticated user
@@ -16,12 +16,19 @@ public class UserAuthentication implements Authentication {
     private String username;
     private final String token;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    private Set<GrantedAuthority> authorities = new HashSet<>();
 
     public UserAuthentication(String token) {
         this.token = token;
+    }
+
+    /**
+     * This method sets the username of the currently authenticated user
+     *
+     * @param username username of the currently authenticated user
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
@@ -31,8 +38,11 @@ public class UserAuthentication implements Authentication {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO: Implement this method to get the roles of the currently authenticated user
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return this.authorities;
+    }
+
+    public void setAuthorities(Set<GrantedAuthority> authorities) {
+        this.authorities = authorities;
     }
 
     /**
