@@ -25,16 +25,17 @@ public class ArticlesFilter {
 
         Set<ArticleEntity> articles = new HashSet<>(articlesList);
 
-        // filter by user id
-        UUID authorId = filterCriteria.getAuthorId();
-        if (!Objects.isNull(authorId)) {
+        // filter by author name
+        String authorName = filterCriteria.getAuthorName();
+        if (!Objects.isNull(authorName)) {
             articles = articles.stream().filter(article ->
-                    article.getAuthors().stream().anyMatch(author -> author.getId().equals(authorId))
+                    article.getAuthors().stream().anyMatch(author -> author.getUsername().equals(authorName))
             ).collect(Collectors.toSet());
         }
+
         // filter by tags
         Set<String> tags = filterCriteria.getTags();
-        if(Objects.isNull(tags)) tags = new HashSet<>(); // to avoid null pointer exception (if tags is null)
+        if (Objects.isNull(tags)) tags = new HashSet<>(); // to avoid null pointer exception (if tags is null)
         tags = tags.stream().filter(tag -> !tag.isBlank()).collect(Collectors.toSet());
         if (!tags.isEmpty()) {
             Set<String> finalTags = tags;
@@ -42,6 +43,7 @@ public class ArticlesFilter {
                     .filter(article -> article.getTags().stream().anyMatch(finalTags::contains))
                     .collect(Collectors.toSet());
         }
+
         // filter by date range
         Date fromDate = filterCriteria.getFromDate();
         Date toDate = filterCriteria.getToDate();

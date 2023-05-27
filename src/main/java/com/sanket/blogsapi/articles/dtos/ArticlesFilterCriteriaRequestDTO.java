@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ArticlesFilterCriteriaRequestDTO {
-    private UUID authorId;
+    private String authorName;
     private Set<String> tags;
     private SortCriteria sortCriteria;
     private Date fromDate;
