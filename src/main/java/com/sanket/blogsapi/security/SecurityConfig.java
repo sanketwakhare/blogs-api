@@ -49,6 +49,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/articles/search").permitAll()
                 .requestMatchers(HttpMethod.GET, "/comments/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/users/signup", "/users/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/users/followers/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/users/followings/**").permitAll()
                 // authenticate role specific requests
                 .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole(RolesEnum.ADMIN.name())
                 .requestMatchers(HttpMethod.POST, "/roles").hasRole(RolesEnum.ADMIN.name())
