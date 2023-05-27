@@ -27,7 +27,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"javascript currying\",\r\n    \"subtitle\": \"js function currying\",\r\n    \"body\": \"Lorem Ipsum 123\",\r\n    \"tags\": [\r\n        \"javascript\",\r\n        \"frontend\",\r\n        \"functions\",\r\n        \"currying\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"title\": \"spring boot 101\",\r\n    \"subtitle\": \"spring boot basics\",\r\n    \"body\": \"another article\",\r\n    \"tags\": [\r\n        \"java\",\r\n        \"backend\",\r\n        \"spring boot\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -66,6 +66,29 @@
 							"path": [
 								"articles",
 								"{{articleId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get article by slug id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/articles/{{slugId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"articles",
+								"{{slugId}}"
 							]
 						}
 					},
@@ -204,7 +227,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"javascript currying\",\r\n    \"subtitle\": \"currying\",\r\n    \"body\": \"currying currying currying\",\r\n    \"tags\": [\r\n        \"frontend\",\r\n        \"js\",\r\n        \"javascript\",\r\n        \"currying\"\r\n    ]\r\n}",
+							"raw": "{\r\n    \"title\": \"javascript function currying updated\",\r\n    \"subtitle\": \"currying\",\r\n    \"body\": \"currying currying currying\",\r\n    \"tags\": [\r\n        \"frontend\",\r\n        \"js\",\r\n        \"javascript\",\r\n        \"currying\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -336,7 +359,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"authorId\": \"{{userId}}\",\r\n    \"tags\": [\"javascript\"],\r\n    \"fromDate\": \"2023-05-01\",\r\n    \"toDate\": \"2023-12-30\",\r\n    \"sortCriteria\": {\r\n        \"direction\": \"ASC\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"authorName\": \"{{authorName}}\",\r\n    \"tags\": [\"\"],\r\n    \"fromDate\": \"2023-05-01\",\r\n    \"toDate\": \"2023-12-30\",\r\n    \"sortCriteria\": {\r\n        \"direction\": \"ASC\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -409,7 +432,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"user7\",\r\n    \"email\": \"user7@example.com\",\r\n    \"password\": \"user7@pass\"\r\n}",
+							"raw": "{\r\n    \"username\": \"sanket1\",\r\n    \"email\": \"sanket1@example.com\",\r\n    \"password\": \"sanket1@pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -438,7 +461,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"user7@example.com\",\r\n    \"password\": \"user7@pass\"\r\n}",
+							"raw": "{\r\n    \"email\": \"sanket1@example.com\",\r\n    \"password\": \"sanket1@pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -477,7 +500,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"bio\": \"dev blogs writer!!!\"\r\n}",
+							"raw": "{\r\n    \"bio\": \"technical blogs writer!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -485,7 +508,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8823/users/{{userId}}",
+							"raw": "http://localhost:8823/users/sanket1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -493,14 +516,14 @@
 							"port": "8823",
 							"path": [
 								"users",
-								"{{userId}}"
+								"sanket1"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "get user by id",
+					"name": "get user by username",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -515,7 +538,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8823/users/{{userId}}",
+							"raw": "http://localhost:8823/users/profile/sanket1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -523,7 +546,38 @@
 							"port": "8823",
 							"path": [
 								"users",
-								"{{userId}}"
+								"profile",
+								"sanket1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8823/users/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"users",
+								"me"
 							]
 						}
 					},
@@ -559,7 +613,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userIdToFollow\": \"79de38b0-1073-43a2-badd-db20b0aa6ee2\"\r\n}",
+							"raw": "{\r\n    \"usernameToFollow\": \"sanket2\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -598,7 +652,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userIdToUnfollow\": \"79de38b0-1073-43a2-badd-db20b0aa6ee2\"\r\n}",
+							"raw": "{\r\n    \"usernameToUnfollow\": \"sanket2\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -624,19 +678,12 @@
 					"name": "get user followings",
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{bearerToken}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8823/users/followings",
+							"raw": "http://localhost:8823/users/followings/sanket1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -644,7 +691,8 @@
 							"port": "8823",
 							"path": [
 								"users",
-								"followings"
+								"followings",
+								"sanket1"
 							]
 						}
 					},
@@ -654,19 +702,12 @@
 					"name": "get user followers",
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{followingId}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8823/users/followers",
+							"raw": "http://localhost:8823/users/followers/sanket2",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -674,7 +715,8 @@
 							"port": "8823",
 							"path": [
 								"users",
-								"followers"
+								"followers",
+								"sanket2"
 							]
 						}
 					},
@@ -840,6 +882,208 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "roles",
+			"item": [
+				{
+					"name": "assign role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"sanket2\",\r\n    \"role\": \"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/roles/assign",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"roles",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revoke role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"sanket2\",\r\n    \"role\": \"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/roles/revoke",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"roles",
+								"revoke"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"USER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/roles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role\": \"USER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8823/roles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8823",
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "swagger-ui",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8823/swagger-ui.html",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8823",
+					"path": [
+						"swagger-ui.html"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "swagger-ui Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8823/api/v3/api-docs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8823",
+					"path": [
+						"api",
+						"v3",
+						"api-docs"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -864,10 +1108,6 @@
 	],
 	"variable": [
 		{
-			"key": "userId",
-			"value": "24e5080a-9145-43e7-99ca-a05df996fa2a"
-		},
-		{
 			"key": "articleId",
 			"value": "a3a58520-1f40-47d7-b243-0817148c8ba6",
 			"type": "string"
@@ -882,12 +1122,16 @@
 		},
 		{
 			"key": "bearerToken",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyNyIsImlzcyI6ImJsb2dzLWFwaSIsImlhdCI6MTY4NDYwNTI5MywiZXhwIjoxNjg0NjA4ODkzfQ.Yvl0W5aWy0J88OHYaV4ZifSelv8tT1HYmd5sw7YXGHk"
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYW5rZXQyIiwiaXNzIjoiYmxvZ3MtYXBpIiwiaWF0IjoxNjg1MTIwNTQzLCJleHAiOjE2ODUxMjQxNDN9.ktiARXtbnrYh1A_ZY3e6gCZ1ftSNeDRNAo4RMt1NYdY"
 		},
 		{
 			"key": "authorName",
 			"value": "user7",
 			"type": "string"
+		},
+		{
+			"key": "slugId",
+			"value": "spring-boot-101-4586641663e4"
 		}
 	]
 }
