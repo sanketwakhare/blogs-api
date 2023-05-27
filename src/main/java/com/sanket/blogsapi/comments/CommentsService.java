@@ -83,17 +83,12 @@ public class CommentsService {
     public CommentEntity updateComment(UUID commentId, CommentEntity commentEntity, String commenterName) {
         // check if comment exists
         CommentEntity comment = findById(commentId);
-        UserEntity commenter = usersService.findByUsername(commenterName);
-
-        // only comment author can modify the comment
-        if (commenter.getId() != comment.getAuthor().getId()) {
-            throw new CommentNotModifiableException(commentId);
-        }
 
         // use builder to invoke validations
-        CommentEntity updatedComment = CommentEntity.builder().title(commentEntity.getTitle())
+        CommentEntity updatedComment = CommentEntity.builder()
+                .title(commentEntity.getTitle())
                 .body(commentEntity.getBody())
-                .author(commenter)
+                .author(comment.getAuthor())
                 .article(comment.getArticle())
                 .build();
 
@@ -101,11 +96,14 @@ public class CommentsService {
         comment.setTitle(updatedComment.getTitle());
         comment.setBody(updatedComment.getBody());
 
+        CommentEntity savedComment;
         try {
-            return commentsRepository.save(comment);
+            savedComment = commentsRepository.save(comment);
         } catch (Exception e) {
             throw new CommentsUpdateFailedException();
         }
+        System.out.println("comment updated by " + commenterName);
+        return savedComment;
     }
 
     /**
@@ -132,15 +130,10 @@ public class CommentsService {
      */
     public void deleteComment(UUID commentId, String commenterName) {
         CommentEntity comment = findById(commentId);
-        UserEntity commenter = usersService.findByUsername(commenterName);
-
-        // only comment author can delete the comment
-        if (commenter.getId() != comment.getAuthor().getId()) {
-            throw new CommentNotModifiableException(commentId);
-        }
 
         try {
             commentsRepository.delete(comment);
+            System.out.println("comment deleted by " + commenterName);
         } catch (Exception e) {
             throw new CommentsDeletionFailedException();
         }

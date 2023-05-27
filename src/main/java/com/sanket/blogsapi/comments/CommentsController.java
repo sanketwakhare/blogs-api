@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,8 @@ public class CommentsController {
      * @return newly created comment
      */
     @PostMapping("")
+    // allow only admins and logged-in user to create a comment
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.equals(#username)")
     public ResponseEntity<CommentResponseDTO> createComment(
             @RequestBody CreateCommentRequestDTO requestDTO,
             @AuthenticationPrincipal String username) {
@@ -79,6 +82,8 @@ public class CommentsController {
      * @return Updated comment
      */
     @PatchMapping("/{commentId}")
+    // allow only admins and comment author to update a comment
+    @PreAuthorize("hasRole('ADMIN') or @commentsService.findById(#commentId).author.username.equals(#username)")
     public ResponseEntity<CommentResponseDTO> updateComment(
             @PathVariable("commentId") UUID commentId,
             @RequestBody UpdateCommentRequestDTO requestDTO,
@@ -115,6 +120,8 @@ public class CommentsController {
      * @return Deleted comment
      */
     @DeleteMapping("/{commentId}")
+    // allow only admins and comment author to delete a comment
+    @PreAuthorize("hasRole('ADMIN') or @commentsService.findById(#commentId).author.username.equals(#username)")
     public ResponseEntity<ResponseDTO> deleteComment(
             @PathVariable("commentId") UUID commentId,
             @AuthenticationPrincipal String username) {
