@@ -169,7 +169,7 @@ public class UsersTests {
         // create a user first
         UserEntity savedUser = usersService.createUser(username, email, password);
         // update bio
-        UserEntity user = usersService.updateBio(savedUser.getId(), bio);
+        UserEntity user = usersService.updateBio(savedUser.getUsername(), bio);
         Assertions.assertEquals(savedUser.getId(), user.getId());
         Assertions.assertEquals(bio, user.getBio());
     }

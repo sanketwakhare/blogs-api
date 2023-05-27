@@ -4,7 +4,7 @@ import com.sanket.blogsapi.roles.RolesEnum;
 import lombok.Data;
 
 @Data
-public class AssignRoleRequestDTO {
+public class AssignOrRevokeRoleRequestDTO {
     private String username;
     private RolesEnum role;
 }

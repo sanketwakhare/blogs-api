@@ -4,17 +4,21 @@ import com.sanket.blogsapi.common.dtos.ResponseDTO;
 import com.sanket.blogsapi.services.tokens.TokenService;
 import com.sanket.blogsapi.users.constants.UsersSuccessMessages;
 import com.sanket.blogsapi.users.dtos.*;
+import com.sanket.blogsapi.users.exceptions.UserAlreadyFollowedException;
+import com.sanket.blogsapi.users.exceptions.UserCannotFollowException;
+import com.sanket.blogsapi.users.exceptions.UserCannotUnfollowException;
+import com.sanket.blogsapi.users.exceptions.UserNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -69,16 +73,18 @@ public class UsersController {
     /**
      * Update user bio
      *
-     * @param id         user id
+     * @param username   username
      * @param requestDTO user details
      * @return updated user
      */
-    @PatchMapping("/{id}")
+    @PatchMapping("/{username}")
+    // only admin or user itself can update bio
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.equals(#username)")
     public ResponseEntity<UserResponseDTO> updateUserBio(
-            @PathVariable("id") UUID id,
+            @PathVariable("username") String username,
             @RequestBody UpdateUserBioRequestDTO requestDTO) {
         UserEntity user = modelMapper.map(requestDTO, UserEntity.class);
-        UserEntity updatedUser = userService.updateBio(id, user.getBio());
+        UserEntity updatedUser = userService.updateBio(username, user.getBio());
         UserResponseDTO userResponseDTO = modelMapper.map(updatedUser, UserResponseDTO.class);
         mapAuthorities(updatedUser, userResponseDTO);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
@@ -87,13 +93,32 @@ public class UsersController {
     /**
      * Get user by id
      *
-     * @param id user id
+     * @param username username
      * @return user
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(
-            @PathVariable("id") UUID id) {
-        UserEntity user = userService.findById(id);
+    @GetMapping("/profile/{username}")
+    // only admin or user itself can get profile
+    @PreAuthorize("hasRole('ADMIN') or authentication.principal.equals(#username)")
+    public ResponseEntity<UserResponseDTO> getUserProfileByUsername(
+            @PathVariable("username") String username) {
+        UserEntity user = userService.findByUsername(username);
+        UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
+        mapAuthorities(user, userResponseDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
+    }
+
+    /**
+     * Get user by username
+     *
+     * @param username username of a logged-in user
+     * @return user
+     */
+    @GetMapping("/me")
+    // only user itself can get profile
+    @PreAuthorize("authentication.principal.equals(#username)")
+    public ResponseEntity<UserResponseDTO> getMyProfile(
+            @AuthenticationPrincipal String username) {
+        UserEntity user = userService.findByUsername(username);
         UserResponseDTO userResponseDTO = modelMapper.map(user, UserResponseDTO.class);
         mapAuthorities(user, userResponseDTO);
         return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
@@ -112,16 +137,16 @@ public class UsersController {
      * @param requestDTO user id to follow
      * @param username   username of a logged-in user
      * @return success message if user followed
-     * @throws com.sanket.blogsapi.users.exceptions.UserNotFoundException        if user not found
-     * @throws com.sanket.blogsapi.users.exceptions.UserAlreadyFollowedException if user already followed
-     * @throws com.sanket.blogsapi.users.exceptions.UserCannotFollowException    if user tries to follow a user who has blocked him or any invalid user
+     * @throws UserNotFoundException        if user not found
+     * @throws UserAlreadyFollowedException if user already followed
+     * @throws UserCannotFollowException    if user tries to follow a user who has blocked him or any invalid user
      */
     @PostMapping("/follow")
     public ResponseEntity<ResponseDTO> followUser(
             @RequestBody FollowUserRequestDTO requestDTO,
             @AuthenticationPrincipal String username) {
-        UUID userIdToFollow = requestDTO.getUserIdToFollow();
-        userService.followUser(username, userIdToFollow);
+        String usernameToFollow = requestDTO.getUsernameToFollow();
+        userService.followUser(username, usernameToFollow);
         ResponseDTO responseDTO = new ResponseDTO(UsersSuccessMessages.USER_FOLLOWED);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
@@ -132,16 +157,16 @@ public class UsersController {
      * @param requestDTO user id to unfollow
      * @param username   username of a logged-in user
      * @return success message if user unfollowed
-     * @throws com.sanket.blogsapi.users.exceptions.UserNotFoundException       if user not found
-     * @throws com.sanket.blogsapi.users.exceptions.UserCannotUnfollowException if user not followed
-     * @throws com.sanket.blogsapi.users.exceptions.UserCannotUnfollowException if user tries to unfollow a user who has blocked him or any invalid user
+     * @throws UserNotFoundException       if user not found
+     * @throws UserCannotUnfollowException if user not followed
+     * @throws UserCannotUnfollowException if user tries to unfollow a user who has blocked him or any invalid user
      */
     @PostMapping("/unfollow")
     public ResponseEntity<ResponseDTO> unfollowUser(
             @RequestBody UnfollowUserRequestDTO requestDTO,
             @AuthenticationPrincipal String username) {
-        UUID userIdToUnfollow = requestDTO.getUserIdToUnfollow();
-        userService.unfollowUser(username, userIdToUnfollow);
+        String usernameToUnfollow = requestDTO.getUsernameToUnfollow();
+        userService.unfollowUser(username, usernameToUnfollow);
         ResponseDTO responseDTO = new ResponseDTO(UsersSuccessMessages.USER_UNFOLLOWED);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
@@ -151,10 +176,10 @@ public class UsersController {
      *
      * @param username username of a logged-in user
      * @return list of followings
-     * @throws com.sanket.blogsapi.users.exceptions.UserNotFoundException if user not found
+     * @throws UserNotFoundException if user not found
      */
-    @GetMapping("/followings")
-    public ResponseEntity<FollowingsResponseDTO> getFollowings(@AuthenticationPrincipal String username) {
+    @GetMapping("/followings/{username}")
+    public ResponseEntity<FollowingsResponseDTO> getFollowings(@PathVariable("username") String username) {
 
         Set<UserEntity> followings = userService.getFollowingsForUserId(username);
 
@@ -174,10 +199,10 @@ public class UsersController {
      *
      * @param username username of a logged-in user
      * @return list of followers
-     * @throws com.sanket.blogsapi.users.exceptions.UserNotFoundException if user not found
+     * @throws UserNotFoundException if user not found
      */
-    @GetMapping("/followers")
-    public ResponseEntity<FollowersResponseDTO> getFollowers(@AuthenticationPrincipal String username) {
+    @GetMapping("/followers/{username}")
+    public ResponseEntity<FollowersResponseDTO> getFollowers(@PathVariable("username") String username) {
 
         Set<UserEntity> followings = userService.getFollowersForUser(username);
 
