@@ -12,9 +12,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ArticleLikedByUserResponseDTO {
     @NonNull
-    private UUID id;
-    @NonNull
     private String username;
-    @NonNull
-    private String email;
 }
