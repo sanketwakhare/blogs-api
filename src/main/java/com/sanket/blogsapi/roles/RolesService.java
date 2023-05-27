@@ -1,6 +1,8 @@
 package com.sanket.blogsapi.roles;
 
+import com.sanket.blogsapi.roles.exceptions.RoleAlreadyAssignedException;
 import com.sanket.blogsapi.roles.exceptions.RoleAlreadyExistsException;
+import com.sanket.blogsapi.roles.exceptions.UserRoleNotPresentException;
 import com.sanket.blogsapi.roles.exceptions.RoleNotFoundException;
 import com.sanket.blogsapi.users.UserEntity;
 import com.sanket.blogsapi.users.UsersRepository;
@@ -76,14 +78,33 @@ public class RolesService {
      * @throws UserNotFoundException if user is not found
      * @throws RoleNotFoundException if role is not found
      */
-    public void assignRole(String username, RolesEnum role) {
+    public UserEntity assignRole(String username, RolesEnum role) {
         Optional<UserEntity> user = usersRepository.findByUsername(username);
         if (user.isEmpty()) {
             throw new UserNotFoundException(username);
         }
         RoleEntity roleEntity = getRoleByName(role);
         UserEntity userEntity = user.get();
-        userEntity.getRoles().add(roleEntity);
-        usersRepository.save(userEntity);
+        Set<RoleEntity> assignedRoles = userEntity.getRoles();
+        if(assignedRoles.contains(roleEntity)) {
+            throw new RoleAlreadyAssignedException(username, role.name());
+        }
+        assignedRoles.add(roleEntity);
+        return usersRepository.save(userEntity);
+    }
+
+    public UserEntity revokeRole(String username, RolesEnum role) {
+        Optional<UserEntity> user = usersRepository.findByUsername(username);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
+        RoleEntity roleEntity = getRoleByName(role);
+        UserEntity userEntity = user.get();
+        Set<RoleEntity> assignedRoles = userEntity.getRoles();
+        if(!assignedRoles.contains(roleEntity)) {
+            throw new UserRoleNotPresentException(username, role.name());
+        }
+        assignedRoles.remove(roleEntity);
+        return usersRepository.save(userEntity);
     }
 }

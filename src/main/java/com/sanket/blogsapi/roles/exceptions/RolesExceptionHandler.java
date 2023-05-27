@@ -10,7 +10,9 @@ public class RolesExceptionHandler {
 
     @ExceptionHandler({
             RoleAlreadyExistsException.class,
-            RoleNotFoundException.class
+            RoleNotFoundException.class,
+            RoleAlreadyAssignedException.class,
+            UserRoleNotPresentException.class
     })
     public ResponseEntity<ErrorResponseDTO> handleRolesUserException(Exception e) {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
