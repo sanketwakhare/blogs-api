@@ -2,8 +2,8 @@ package com.sanket.blogsapi.roles;
 
 import com.sanket.blogsapi.roles.exceptions.RoleAlreadyAssignedException;
 import com.sanket.blogsapi.roles.exceptions.RoleAlreadyExistsException;
-import com.sanket.blogsapi.roles.exceptions.UserRoleNotPresentException;
 import com.sanket.blogsapi.roles.exceptions.RoleNotFoundException;
+import com.sanket.blogsapi.roles.exceptions.UserRoleNotPresentException;
 import com.sanket.blogsapi.users.UserEntity;
 import com.sanket.blogsapi.users.UsersRepository;
 import com.sanket.blogsapi.users.exceptions.UserNotFoundException;
@@ -93,6 +93,15 @@ public class RolesService {
         return usersRepository.save(userEntity);
     }
 
+    /**
+     * Revokes a role from a user
+     * @param username username
+     * @param role role to be revoked
+     * @return user
+     * @throws UserNotFoundException if user is not found
+     * @throws RoleNotFoundException if role is not found
+     * @throws UserRoleNotPresentException if role is not present for user
+     */
     public UserEntity revokeRole(String username, RolesEnum role) {
         Optional<UserEntity> user = usersRepository.findByUsername(username);
         if (user.isEmpty()) {
@@ -101,10 +110,21 @@ public class RolesService {
         RoleEntity roleEntity = getRoleByName(role);
         UserEntity userEntity = user.get();
         Set<RoleEntity> assignedRoles = userEntity.getRoles();
-        if(!assignedRoles.contains(roleEntity)) {
+        if (!assignedRoles.contains(roleEntity)) {
             throw new UserRoleNotPresentException(username, role.name());
         }
         assignedRoles.remove(roleEntity);
         return usersRepository.save(userEntity);
+    }
+
+    /**
+     * Deletes a role
+     *
+     * @param role role to be deleted
+     * @throws RoleNotFoundException if role is not found
+     */
+    public void deleteRole(RolesEnum role) {
+        RoleEntity roleEntity = getRoleByName(role);
+        rolesRepository.delete(roleEntity);
     }
 }

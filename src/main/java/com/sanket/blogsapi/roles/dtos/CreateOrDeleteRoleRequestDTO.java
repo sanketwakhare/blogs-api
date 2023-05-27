@@ -4,6 +4,6 @@ import com.sanket.blogsapi.roles.RolesEnum;
 import lombok.Data;
 
 @Data
-public class CreateRoleRequestDTO {
+public class CreateOrDeleteRoleRequestDTO {
     private RolesEnum role;
 }

@@ -14,7 +14,7 @@ public class RolesExceptionHandler {
             RoleAlreadyAssignedException.class,
             UserRoleNotPresentException.class
     })
-    public ResponseEntity<ErrorResponseDTO> handleRolesUserException(Exception e) {
+    public ResponseEntity<ErrorResponseDTO> handleRolesBadRequestsException(Exception e) {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
         errorResponseDTO.setErrorMessage(e.getMessage());
         return ResponseEntity.badRequest().body(errorResponseDTO);
