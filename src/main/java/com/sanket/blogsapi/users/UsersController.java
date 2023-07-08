@@ -47,7 +47,7 @@ public class UsersController {
             @RequestBody CreateUserRequestDTO requestDTO) {
         UserEntity user = modelMapper.map(requestDTO, UserEntity.class);
         UserEntity savedUser = userService.createUser(user.getUsername(),
-                user.getEmail(), user.getPassword());
+                user.getEmail(), user.getPassword(), user.getName());
         UserResponseDTO userResponseDTO = modelMapper.map(savedUser, UserResponseDTO.class);
         mapAuthorities(savedUser, userResponseDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);

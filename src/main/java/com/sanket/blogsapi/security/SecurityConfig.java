@@ -1,6 +1,10 @@
 package com.sanket.blogsapi.security;
 
 import com.sanket.blogsapi.roles.RolesEnum;
+import com.sanket.blogsapi.security.oauth.CustomOAuth2UserService;
+import com.sanket.blogsapi.security.oauth.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.sanket.blogsapi.security.oauth.OAuth2AuthenticationFailureHandler;
+import com.sanket.blogsapi.security.oauth.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,12 +30,28 @@ public class SecurityConfig {
 
     private final AuthenticationFilter userAuthenticationFilter;
 
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+
+    private final CustomOAuth2UserService customOAuth2UserService;
+
     public SecurityConfig(@Autowired AuthenticationEntryPoint delegatedAuthenticationEntryPoint,
                           @Autowired AccessDeniedHandler restAccessDeniedHandler,
-                          @Autowired AuthenticationFilter userAuthenticationFilter) {
+                          @Autowired AuthenticationFilter userAuthenticationFilter,
+                          @Autowired OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
+                          @Autowired OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+                          @Autowired HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository,
+                          @Autowired CustomOAuth2UserService customOAuth2UserService) {
         this.delegatedAuthenticationEntryPoint = delegatedAuthenticationEntryPoint;
         this.restAccessDeniedHandler = restAccessDeniedHandler;
         this.userAuthenticationFilter = userAuthenticationFilter;
+        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
+        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
+        this.httpCookieOAuth2AuthorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository;
+        this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
@@ -43,6 +63,8 @@ public class SecurityConfig {
 
         // security config which allows only authenticated requests
         http.csrf().disable();
+        // enable cors configuration
+        http.cors();
         http.authorizeHttpRequests()
 
                 // permit public urls
@@ -53,6 +75,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/users/followers/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/users/followings/**").permitAll()
 
+//                .requestMatchers(HttpMethod.GET, "/login/*").permitAll()
+
                 // authenticate role specific requests
                 .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole(RolesEnum.ADMIN.name())
 
@@ -60,6 +84,17 @@ public class SecurityConfig {
                 // .requestMatchers(HttpMethod.POST, "/roles/**").hasRole(RolesEnum.ADMIN.name())
                 // .requestMatchers(HttpMethod.DELETE, "/roles/**").hasRole(RolesEnum.ADMIN.name())
 
+                .requestMatchers(
+                        "/error",
+                        "/favicon.ico",
+                        "/*/*.png",
+                        "/*/*.gif",
+                        "/*/*.svg",
+                        "/*/*.jpg",
+                        "/*/*.html",
+                        "/*/*.css",
+                        "/*/*.js").permitAll()
+                .requestMatchers("/oauth/**","/auth/**", "/oauth2/**").permitAll()
                 // authenticate all others requests
                 .anyRequest().authenticated()
                 .and()
@@ -67,7 +102,23 @@ public class SecurityConfig {
                 // configure exception handlers
                 .exceptionHandling()
                 .accessDeniedHandler(restAccessDeniedHandler)
-                .authenticationEntryPoint(delegatedAuthenticationEntryPoint);
+                .authenticationEntryPoint(delegatedAuthenticationEntryPoint)
+
+                // oauth2 configuration
+                .and()
+                .oauth2Login()
+                    .authorizationEndpoint()
+                        .baseUri("/oauth2/authorize")
+                        .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                        .and()
+                    .redirectionEndpoint()
+                        .baseUri("/oauth2/callback/*")
+                        .and()
+                    .userInfoEndpoint()
+                        .userService(customOAuth2UserService)
+                        .and()
+                    .successHandler(oAuth2AuthenticationSuccessHandler)
+                    .failureHandler(oAuth2AuthenticationFailureHandler);
 
         // add the user authentication filter before the anonymous authentication filter
         http.addFilterBefore(userAuthenticationFilter, AnonymousAuthenticationFilter.class);

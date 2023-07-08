@@ -27,7 +27,7 @@ public class UsersTests {
     public void testCreateUser() {
         int random = (int) (Math.random() * 1000000000);
         String username = "sanket" + random;
-        UserEntity savedUser = usersService.createUser(username, username + "@example.com", "password");
+        UserEntity savedUser = usersService.createUser(username, username + "@example.com", "password", username);
         Assertions.assertEquals(savedUser.getUsername(), username);
     }
 
@@ -38,7 +38,7 @@ public class UsersTests {
         int random = (int) (Math.random() * 1000000000);
         String username = "gatha" + random;
         // create a user first
-        UserEntity savedUser = usersService.createUser(username, username + "@example.com", "password");
+        UserEntity savedUser = usersService.createUser(username, username + "@example.com", "password", username);
         // find by username
         UserEntity user = usersService.findByUsername(username);
         Assertions.assertEquals(savedUser.getId(), user.getId());
@@ -65,7 +65,7 @@ public class UsersTests {
         String username = "gatha" + random;
         String email = username + "@example.com";
         // create a user first
-        UserEntity savedUser = usersService.createUser(username, email, "password");
+        UserEntity savedUser = usersService.createUser(username, email, "password", username);
         // find by email
         UserEntity user = usersService.findByEmail(email);
         Assertions.assertEquals(savedUser.getId(), user.getId());
@@ -92,7 +92,7 @@ public class UsersTests {
         String username = "gatha" + random;
         String email = username + "@example.com";
         // create a user first
-        UserEntity savedUser = usersService.createUser(username, email, "password");
+        UserEntity savedUser = usersService.createUser(username, email, "password", username);
         // find by id
         UserEntity user = usersService.findById(savedUser.getId());
         Assertions.assertEquals(savedUser.getId(), user.getId());
@@ -119,7 +119,7 @@ public class UsersTests {
         String email = username + "@example.com";
         String password = "password";
         // create a user first
-        UserEntity savedUser = usersService.createUser(username, email, password);
+        UserEntity savedUser = usersService.createUser(username, email, password, username);
         // login
         UserEntity user = usersService.loginUser(email, password);
         Assertions.assertEquals(savedUser.getId(), user.getId());
@@ -135,7 +135,7 @@ public class UsersTests {
         String password = "password";
         String wrongPassword = "wrongPassword";
         // create a user first
-        UserEntity savedUser = usersService.createUser(username, email, password);
+        UserEntity savedUser = usersService.createUser(username, email, password, username);
 
         // expect invalid credential exception by entering invalid password
         Exception exception = assertThrows(InvalidCredentialsException.class, () -> {
@@ -158,7 +158,6 @@ public class UsersTests {
     }
 
     @Test
-    @Transactional
     @Rollback
     public void testUpdateUserBio() {
         int random = (int) (Math.random() * 1000000000);
@@ -167,7 +166,7 @@ public class UsersTests {
         String password = "password";
         String bio = "This is my bio";
         // create a user first
-        UserEntity savedUser = usersService.createUser(username, email, password);
+        UserEntity savedUser = usersService.createUser(username, email, password, username);
         // update bio
         UserEntity user = usersService.updateBio(savedUser.getUsername(), bio);
         Assertions.assertEquals(savedUser.getId(), user.getId());

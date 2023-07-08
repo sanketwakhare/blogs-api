@@ -37,7 +37,7 @@ public class UsersService {
      * @param password password
      * @return UserEntity
      */
-    public UserEntity createUser(String username, String email, String password) {
+    public UserEntity createUser(String username, String email, String password, String name) {
 
         Optional<UserEntity> user;
         // check if user with same username already exists
@@ -68,6 +68,46 @@ public class UsersService {
                 .email(email)
                 .password(encodedPassword)
                 .roles(Set.of(roleEntity))
+                .name(name)
+                .authProvider(AuthProvider.local)
+                .build();
+        return usersRepository.save(newUserEntity);
+    }
+
+    /**
+     * Create a user with oauth provider
+     *
+     * @param email
+     * @param name
+     * @param provider
+     * @param imageUrl
+     * @return
+     */
+    public UserEntity createOAuthUser(String email, String name, String provider, String imageUrl) {
+
+        Optional<UserEntity> user;
+        // check if user with same username already exists
+        user = usersRepository.findByUsername(email);
+        if (user.isPresent()) {
+            throw new DuplicateUserNameException(email);
+        }
+        // check if user with same email already exists
+        user = usersRepository.findByEmail(email);
+        if (user.isPresent()) {
+            throw new DuplicateUserEmailException(email);
+        }
+
+        // default role for a user
+        RoleEntity roleEntity = rolesService.getRoleByName(RolesEnum.USER);
+
+        // create a new user
+        UserEntity newUserEntity = UserEntity.builder()
+                .username(email)
+                .email(email)
+                .name(name)
+                .authProvider(AuthProvider.valueOf(provider))
+                .imageUrl(imageUrl)
+                .roles(Set.of(roleEntity))
                 .build();
         return usersRepository.save(newUserEntity);
     }
@@ -82,6 +122,10 @@ public class UsersService {
     public UserEntity loginUser(String email, String password) {
         Optional<UserEntity> user = usersRepository.findByEmail(email);
         if (user.isPresent()) {
+            if(!user.get().getAuthProvider().equals(AuthProvider.local)) {
+                throw new IncorrectAuthProviderException(
+                        user.get().getAuthProvider().toString());
+            }
             // validate password
             if (passwordEncoder.matches(password, user.get().getPassword())) {
                 return user.get();

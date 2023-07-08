@@ -4,10 +4,9 @@ import com.sanket.blogsapi.common.BaseEntity;
 import com.sanket.blogsapi.common.constants.CommonConstants;
 import com.sanket.blogsapi.roles.RoleEntity;
 import com.sanket.blogsapi.users.constants.UsersErrorMessages;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
@@ -36,8 +35,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "email", nullable = false, unique = true, length = 30)
     private String email;
 
-    @NonNull
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column
@@ -69,4 +67,15 @@ public class UserEntity extends BaseEntity {
     @ManyToMany
     @LazyCollection(value = LazyCollectionOption.FALSE)
     private Set<RoleEntity> roles;
+
+    @Column(name = "auth_provider", nullable = false)
+    @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private AuthProvider authProvider;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 }
