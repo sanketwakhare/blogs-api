@@ -24,8 +24,9 @@ public class UsersExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponseDTO);
     }
 
-    @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<ErrorResponseDTO> handleInvalidCredentialsException(InvalidCredentialsException exc) {
+    @ExceptionHandler({InvalidCredentialsException.class,
+            IncorrectAuthProviderException.class})
+    public ResponseEntity<ErrorResponseDTO> handleInvalidCredentialsException(Exception exc) {
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
         errorResponseDTO.setErrorMessage(exc.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDTO);

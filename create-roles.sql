@@ -11,13 +11,14 @@ values (current_timestamp(),
         UUID_TO_BIN(uuid()));
 
 /*create super admin user*/
-insert into users (created_at, updated_at, username, email, password, id)
+insert into users (created_at, updated_at, username, email, password, id, auth_provider)
 values (current_timestamp(),
         current_timestamp(),
         'superadmin',
         'superadmin@example.com',
         ('$2a$10$mxjorpLyLHaLdqVQNphhNuLqXRDVR1TIVUKeYiIjVr92jvj3mI.cm'),
-        UUID_TO_BIN(uuid()));
+        UUID_TO_BIN(uuid()),
+        'local');
 
 select id, username into @SuperAdminUserId, @SuperAdminUsername from users where username = 'superadmin';
 select @SuperAdminUserid, @SuperAdminUsername;

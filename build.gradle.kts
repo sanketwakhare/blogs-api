@@ -48,6 +48,9 @@ dependencies {
 
     // spring boot tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // google oauth
+    implementation("org.springframework.security:spring-security-oauth2-client")
 }
 
 tasks.withType<Test> {

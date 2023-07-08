@@ -1,5 +1,6 @@
 package com.sanket.blogsapi.users.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,4 +16,6 @@ public class CreateUserRequestDTO {
     private String email;
     @NonNull
     private String password;
+    @NotNull
+    private String name;
 }
